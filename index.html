@@ -1,0 +1,2884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Room No 114 — Kirana Stock &amp; Profit Register</title>
+  <meta name="description" content="Shopkeeper ledger, stock management, credit book (khata), and daily profit register for Room No 114.">
+  <meta name="theme-color" content="#23283B">
+
+  <!-- Google Fonts with fallbacks -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,600&family=IBM+Plex+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       DESIGN SYSTEM & LEDGER TOKENS
+       ========================================================================== */
+    :root {
+      /* Core Palette */
+      --ink: #23283B;
+      --paper: #EAE3D2;
+      --paper-warm: #F4EFE6;
+      --paper-card: #FAF7F0;
+      --paper-rule: #D8CEBC;
+      --paper-rule-subtle: #E3DAC9;
+      --turmeric: #C8912B;
+      --turmeric-light: #F7E7C4;
+      --turmeric-dark: #9E6F1A;
+      --betel-green: #4C7A5E;
+      --betel-light: #E2ECE5;
+      --rust: #B0452C;
+      --rust-light: #FAE8E4;
+
+      /* UI Tokens */
+      --bg-page: var(--paper);
+      --bg-surface: var(--paper-card);
+      --text-main: var(--ink);
+      --text-muted: #5E6472;
+      --border-color: var(--paper-rule);
+      --border-focus: var(--turmeric);
+      --modal-overlay: rgba(26, 30, 44, 0.7);
+
+      /* Typography */
+      --font-signboard: 'Fraunces', 'Georgia', 'Playfair Display', serif;
+      --font-num: 'IBM Plex Mono', 'SF Mono', 'Courier New', monospace;
+      --font-ui: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink: #ECEFF4;
+        --paper: #161821;
+        --paper-warm: #1E212D;
+        --paper-card: #252937;
+        --paper-rule: #363B4E;
+        --paper-rule-subtle: #2C3142;
+        --turmeric: #E5A83B;
+        --turmeric-light: #3D2F14;
+        --turmeric-dark: #F5BC53;
+        --betel-green: #5EA37B;
+        --betel-light: #162E21;
+        --rust: #E0674C;
+        --rust-light: #3D1C16;
+
+        --bg-page: var(--paper);
+        --bg-surface: var(--paper-card);
+        --text-main: var(--ink);
+        --text-muted: #9DA5B4;
+        --border-color: var(--paper-rule);
+        --modal-overlay: rgba(10, 12, 18, 0.85);
+      }
+    }
+
+    /* Manual theme override class if needed */
+    body.theme-dark {
+      --ink: #ECEFF4;
+      --paper: #161821;
+      --paper-warm: #1E212D;
+      --paper-card: #252937;
+      --paper-rule: #363B4E;
+      --paper-rule-subtle: #2C3142;
+      --turmeric: #E5A83B;
+      --turmeric-light: #3D2F14;
+      --turmeric-dark: #F5BC53;
+      --betel-green: #5EA37B;
+      --betel-light: #162E21;
+      --rust: #E0674C;
+      --rust-light: #3D1C16;
+      --bg-page: var(--paper);
+      --bg-surface: var(--paper-card);
+      --text-main: var(--ink);
+      --text-muted: #9DA5B4;
+      --border-color: var(--paper-rule);
+    }
+
+    /* Reset & Base */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow-x: hidden;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: var(--font-ui);
+      font-size: 15px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Keep body scrollable naturally without horizontal overflow */
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Focus styling */
+    :focus-visible {
+      outline: 2px solid var(--turmeric);
+      outline-offset: 2px;
+    }
+
+    /* ==========================================================================
+       HEADER & SIGNBOARD
+       ========================================================================== */
+    .signboard {
+      background-color: #23283B;
+      color: #F4EFE6;
+      padding: 14px 16px 12px;
+      border-bottom: 4px solid var(--turmeric);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .signboard-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .store-badge {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .store-title {
+      font-family: var(--font-signboard);
+      font-size: 1.45rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #FFF;
+      line-height: 1.1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .store-title .room-tag {
+      background: var(--turmeric);
+      color: #1A1D29;
+      font-family: var(--font-num);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .store-subtitle {
+      font-size: 0.78rem;
+      color: #C0C5D4;
+      font-weight: 500;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-lock {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #F4EFE6;
+      font-family: var(--font-ui);
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+      touch-action: manipulation;
+    }
+
+    .btn-lock:hover, .btn-lock:focus-visible {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: var(--turmeric);
+      color: #FFF;
+    }
+
+    /* ==========================================================================
+       TAB NAVIGATION
+       ========================================================================== */
+    .nav-tabs-wrapper {
+      background-color: var(--paper-warm);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 56px;
+      z-index: 40;
+    }
+
+    .nav-tabs {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      padding: 0 8px;
+    }
+
+    .nav-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab-button {
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      color: var(--text-muted);
+      font-family: var(--font-ui);
+      font-size: 0.92rem;
+      font-weight: 600;
+      padding: 12px 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      touch-action: manipulation;
+    }
+
+    .tab-button:hover {
+      color: var(--text-main);
+    }
+
+    .tab-button.active {
+      color: var(--text-main);
+      border-bottom-color: var(--turmeric);
+      font-weight: 700;
+    }
+
+    .tab-badge {
+      background: var(--rust);
+      color: #FFF;
+      font-family: var(--font-num);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 10px;
+    }
+
+    /* ==========================================================================
+       MAIN CONTENT CONTAINER
+       ========================================================================== */
+    .app-main {
+      flex: 1;
+      max-width: 1000px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 16px 14px 40px;
+    }
+
+    .tab-pane {
+      display: none;
+      animation: fadeIn 0.15s ease-out;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Section Headers */
+    .section-title-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .section-title {
+      font-family: var(--font-signboard);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: 0.2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ==========================================================================
+       LEDGER STYLE CARDS & GRIDS
+       ========================================================================== */
+    .ledger-sheet {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    /* Summary Grid */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    @media (min-width: 650px) {
+      .summary-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (min-width: 900px) {
+      .summary-grid {
+        grid-template-columns: repeat(6, 1fr);
+      }
+    }
+
+    .summary-cell {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-left: 3px solid var(--turmeric);
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+    }
+
+    .summary-cell.profit-cell {
+      border-left-color: var(--betel-green);
+    }
+
+    .summary-cell.credit-cell {
+      border-left-color: var(--rust);
+    }
+
+    .summary-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .summary-value {
+      font-family: var(--font-num);
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+      white-space: nowrap;
+    }
+
+    .summary-value.positive {
+      color: var(--betel-green);
+    }
+
+    .summary-value.negative {
+      color: var(--rust);
+    }
+
+    /* ==========================================================================
+       ALERT BOX (RUNNING LOW)
+       ========================================================================== */
+    .alert-box {
+      background: var(--rust-light);
+      border: 1px solid var(--rust);
+      border-left: 4px solid var(--rust);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      color: var(--text-main);
+    }
+
+    .alert-box-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .alert-box-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--rust);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .alert-tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .low-stock-tag {
+      background: var(--bg-surface);
+      border: 1px solid var(--rust);
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .low-stock-tag strong {
+      color: var(--rust);
+      font-family: var(--font-num);
+    }
+
+    /* ==========================================================================
+       FORMS & INPUTS (TACTILE, EASY ON PHONE)
+       ========================================================================== */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 600px) {
+      .form-grid.two-col {
+        grid-template-columns: 1fr 1fr;
+      }
+      .form-grid.three-col {
+        grid-template-columns: 1fr 1fr 1fr;
+      }
+      .form-grid.sale-grid {
+        grid-template-columns: 2fr 1fr 1.5fr;
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .form-input, .form-select {
+      background: var(--bg-page);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-family: var(--font-ui);
+      font-size: 1rem;
+      color: var(--text-main);
+      width: 100%;
+      min-height: 44px;
+      transition: border-color 0.15s ease;
+    }
+
+    .form-input:focus, .form-select:focus {
+      outline: none;
+      border-color: var(--turmeric);
+      box-shadow: 0 0 0 1px var(--turmeric);
+    }
+
+    .form-input.number-input {
+      font-family: var(--font-num);
+      font-weight: 600;
+    }
+
+    .input-hint {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Buttons */
+    .btn {
+      min-height: 44px;
+      padding: 10px 18px;
+      font-family: var(--font-ui);
+      font-size: 0.95rem;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border: 1px solid transparent;
+      touch-action: manipulation;
+      transition: all 0.15s ease;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background-color: var(--turmeric);
+      color: #1A1D29;
+      border-color: var(--turmeric-dark);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--turmeric-dark);
+      color: #FFF;
+    }
+
+    .btn-success {
+      background-color: var(--betel-green);
+      color: #FFF;
+    }
+
+    .btn-success:hover {
+      opacity: 0.92;
+    }
+
+    .btn-danger {
+      background-color: transparent;
+      color: var(--rust);
+      border-color: var(--rust);
+    }
+
+    .btn-danger:hover {
+      background-color: var(--rust);
+      color: #FFF;
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      color: var(--text-main);
+      border-color: var(--border-color);
+    }
+
+    .btn-outline:hover {
+      background-color: var(--paper-warm);
+    }
+
+    .btn-sm {
+      min-height: 32px;
+      padding: 4px 10px;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    /* Live sale preview card */
+    .sale-preview-card {
+      background: var(--paper-warm);
+      border: 1px dashed var(--turmeric);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      margin-top: 12px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 0.95rem;
+    }
+
+    .sale-preview-calc {
+      font-family: var(--font-num);
+      font-weight: 600;
+    }
+
+    .sale-preview-profit {
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+    }
+
+    .sale-preview-profit.profit-pos {
+      background: var(--betel-light);
+      color: var(--betel-green);
+    }
+
+    .sale-preview-profit.profit-neg {
+      background: var(--rust-light);
+      color: var(--rust);
+    }
+
+    /* ==========================================================================
+       RULED LEDGER TABLES
+       ========================================================================== */
+    .table-scroll-container {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      background: var(--bg-surface);
+      margin-bottom: 16px;
+    }
+
+    .ledger-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.88rem;
+      min-width: 580px;
+    }
+
+    .ledger-table th {
+      background: var(--paper-warm);
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      padding: 10px 12px;
+      border-bottom: 2px solid var(--border-color);
+      white-space: nowrap;
+    }
+
+    .ledger-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--paper-rule-subtle);
+      color: var(--text-main);
+      vertical-align: middle;
+    }
+
+    .ledger-table tbody tr:hover {
+      background: var(--paper-warm);
+    }
+
+    .ledger-table tbody tr.row-low-stock {
+      background-color: rgba(176, 69, 44, 0.08);
+    }
+
+    .ledger-table .num-cell {
+      font-family: var(--font-num);
+      white-space: nowrap;
+    }
+
+    .ledger-table .align-right {
+      text-align: right;
+    }
+
+    /* Payment Badges */
+    .pay-badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: var(--radius-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .pay-badge.pay-cash {
+      background: var(--betel-light);
+      color: var(--betel-green);
+    }
+
+    .pay-badge.pay-upi {
+      background: #E0E7FF;
+      color: #3730A3;
+    }
+
+    .pay-badge.pay-card {
+      background: #FEF3C7;
+      color: #92400E;
+    }
+
+    .pay-badge.pay-credit {
+      background: var(--rust-light);
+      color: var(--rust);
+    }
+
+    /* Empty state */
+    .empty-ledger-state {
+      padding: 32px 16px;
+      text-align: center;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* ==========================================================================
+       LOCK SCREEN (FULL SCREEN)
+       ========================================================================== */
+    .lock-screen {
+      position: fixed;
+      inset: 0;
+      background: #1A1D29;
+      color: #F4EFE6;
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .lock-box {
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
+      background: #23283B;
+      border: 1px solid #363B4E;
+      border-top: 4px solid var(--turmeric);
+      border-radius: var(--radius-lg);
+      padding: 32px 24px 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .lock-store-name {
+      font-family: var(--font-signboard);
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: #FFF;
+      margin-bottom: 4px;
+    }
+
+    .lock-tagline {
+      font-size: 0.85rem;
+      color: var(--turmeric);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+
+    .lock-input-group {
+      margin-bottom: 16px;
+    }
+
+    .lock-input {
+      width: 100%;
+      height: 52px;
+      background: #161821;
+      border: 2px solid #363B4E;
+      border-radius: var(--radius-md);
+      color: #FFF;
+      font-family: var(--font-num);
+      font-size: 1.8rem;
+      text-align: center;
+      letter-spacing: 12px;
+      touch-action: manipulation;
+    }
+
+    .lock-input:focus {
+      outline: none;
+      border-color: var(--turmeric);
+      box-shadow: 0 0 0 2px rgba(200, 145, 43, 0.3);
+    }
+
+    .lock-error {
+      color: #FF8566;
+      font-size: 0.88rem;
+      min-height: 22px;
+      margin-bottom: 14px;
+      font-weight: 600;
+    }
+
+    .lock-btn {
+      width: 100%;
+      height: 48px;
+      font-size: 1.05rem;
+    }
+
+    .lock-footer-note {
+      margin-top: 24px;
+      font-size: 0.76rem;
+      color: #8C93A8;
+      line-height: 1.4;
+    }
+
+    /* ==========================================================================
+       CUSTOM IN-PAGE MODAL (NO WINDOW.ALERT/PROMPT/CONFIRM)
+       ========================================================================== */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--modal-overlay);
+      backdrop-filter: blur(2px);
+      z-index: 500;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-top: 4px solid var(--turmeric);
+      border-radius: var(--radius-md);
+      max-width: 420px;
+      width: 100%;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      animation: modalPop 0.15s ease-out;
+    }
+
+    @keyframes modalPop {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-title {
+      font-family: var(--font-signboard);
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text-main);
+    }
+
+    .modal-body {
+      font-size: 0.95rem;
+      color: var(--text-main);
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+
+    .modal-input-wrap {
+      margin-bottom: 16px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* ==========================================================================
+       FOOTER
+       ========================================================================== */
+    .ledger-footer {
+      background: var(--paper-warm);
+      border-top: 1px solid var(--border-color);
+      padding: 16px 14px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .footer-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      font-family: var(--font-num);
+      font-size: 0.75rem;
+      margin-bottom: 6px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--betel-green);
+    }
+
+    /* Quick helper badges */
+    .advance-badge {
+      color: var(--betel-green);
+      font-weight: 700;
+      font-family: var(--font-num);
+    }
+
+    .owed-badge {
+      color: var(--rust);
+      font-weight: 700;
+      font-family: var(--font-num);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       1. PASS KEY LOCK SCREEN
+       ========================================================================== -->
+  <div id="lockScreen" class="lock-screen" style="display: flex;">
+    <div class="lock-box">
+      <div class="lock-store-name">Room No 114</div>
+      <div class="lock-tagline">Stock &amp; Profit Register</div>
+      
+      <form id="lockForm" onsubmit="handleUnlock(event)">
+        <div class="lock-input-group">
+          <label for="passKeyInput" style="display: block; font-size: 0.82rem; margin-bottom: 8px; color: #C0C5D4;">
+            ENTER 4-DIGIT PASS KEY
+          </label>
+          <input 
+            type="password" 
+            id="passKeyInput" 
+            class="lock-input" 
+            inputmode="numeric" 
+            pattern="[0-9]*" 
+            maxlength="4" 
+            autocomplete="off" 
+            placeholder="••••"
+            required
+            autofocus
+          >
+        </div>
+        <div id="lockError" class="lock-error"></div>
+        <button type="submit" class="btn btn-primary lock-btn">
+          Unlock Register &rarr;
+        </button>
+      </form>
+
+      <div class="lock-footer-note">
+        Note: This is a screen lock for day-to-day privacy on mobile counters, not military-grade encryption.
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       APP SHELL (UNLOCKED)
+       ========================================================================== -->
+  <div id="appShell" style="display: none; flex-direction: column; min-height: 100vh;">
+    
+    <!-- Signboard Header -->
+    <header class="signboard">
+      <div class="signboard-inner">
+        <div class="store-badge">
+          <h1 class="store-title">
+            Room No 114
+            <span class="room-tag">Kirana</span>
+          </h1>
+          <span class="store-subtitle">Stock &amp; Profit Register</span>
+        </div>
+        <div class="header-actions">
+          <button type="button" class="btn-lock" id="partnerSyncBtn" onclick="openPartnerSyncModal()" title="5 Partners Live Sync">
+            👥 <span id="headerSyncText">5 Partners Sync</span>
+          </button>
+          <button type="button" class="btn-lock" id="lockAppBtn" onclick="lockRegister()" title="Lock Screen">
+            🔒 Lock
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <nav class="nav-tabs-wrapper" aria-label="Main Navigation">
+      <div class="nav-tabs" role="tablist">
+        <button type="button" class="tab-button active" role="tab" id="tab-dashboard" aria-selected="true" onclick="switchTab('dashboard')">
+          📊 Dashboard
+        </button>
+        <button type="button" class="tab-button" role="tab" id="tab-stock" aria-selected="false" onclick="switchTab('stock')">
+          📦 Stock <span id="lowStockTabBadge" class="tab-badge" style="display:none;">0</span>
+        </button>
+        <button type="button" class="tab-button" role="tab" id="tab-sale" aria-selected="false" onclick="switchTab('sale')">
+          ⚡ Record a Sale
+        </button>
+        <button type="button" class="tab-button" role="tab" id="tab-history" aria-selected="false" onclick="switchTab('history')">
+          📜 Sales History
+        </button>
+        <button type="button" class="tab-button" role="tab" id="tab-khata" aria-selected="false" onclick="switchTab('khata')">
+          📒 Credit Book (Khata)
+        </button>
+      </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="app-main">
+
+      <!-- ======================================================================
+           TAB 1: DASHBOARD
+           ====================================================================== -->
+      <section id="pane-dashboard" class="tab-pane active" role="tabpanel">
+        
+        <!-- Summary Cells (6 Metrics) -->
+        <div class="summary-grid">
+          <div class="summary-cell">
+            <div class="summary-label">Sales Today</div>
+            <div class="summary-value" id="dashSalesToday">₹0</div>
+          </div>
+          <div class="summary-cell profit-cell">
+            <div class="summary-label">Profit Today</div>
+            <div class="summary-value" id="dashProfitToday">₹0</div>
+          </div>
+          <div class="summary-cell">
+            <div class="summary-label">Sales All-Time</div>
+            <div class="summary-value" id="dashSalesAllTime">₹0</div>
+          </div>
+          <div class="summary-cell profit-cell">
+            <div class="summary-label">Profit All-Time</div>
+            <div class="summary-value" id="dashProfitAllTime">₹0</div>
+          </div>
+          <div class="summary-cell">
+            <div class="summary-label">Stock Value (Cost)</div>
+            <div class="summary-value" id="dashStockValue">₹0</div>
+          </div>
+          <div class="summary-cell credit-cell">
+            <div class="summary-label">Credit Outstanding</div>
+            <div class="summary-value" id="dashCreditOwed">₹0</div>
+          </div>
+        </div>
+
+        <!-- Running Low Alert Box -->
+        <div id="lowStockAlertBox" class="alert-box" style="display: none;">
+          <div class="alert-box-header">
+            <span class="alert-box-title">
+              ⚠️ Running Low Alert
+            </span>
+            <span id="lowStockCountText" style="font-size: 0.8rem; font-weight: 700; color: var(--rust);"></span>
+          </div>
+          <p style="font-size: 0.85rem; margin-bottom: 6px;">The following grocery items are at or below their restock threshold:</p>
+          <div id="lowStockTagContainer" class="alert-tag-list"></div>
+        </div>
+
+        <!-- Recent Sales Table (Last 8) -->
+        <div class="ledger-sheet">
+          <div class="section-title-bar">
+            <div>
+              <h2 class="section-title">Recent Sales</h2>
+              <div class="section-subtitle">Last 8 transactions recorded at the counter</div>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm" onclick="switchTab('sale')">
+              + New Sale
+            </button>
+          </div>
+
+          <div class="table-scroll-container">
+            <table class="ledger-table">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th class="align-right">Qty</th>
+                  <th class="align-right">Price</th>
+                  <th class="align-right">Sold For</th>
+                  <th class="align-right">Profit</th>
+                  <th>Payment</th>
+                  <th>When</th>
+                </tr>
+              </thead>
+              <tbody id="recentSalesTbody">
+                <!-- populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ======================================================================
+           TAB 2: STOCK
+           ====================================================================== -->
+      <section id="pane-stock" class="tab-pane" role="tabpanel">
+        
+        <!-- Add Stock Item Form -->
+        <div class="ledger-sheet">
+          <div class="section-title-bar">
+            <div>
+              <h2 class="section-title">Add Kirana Item</h2>
+              <div class="section-subtitle">Enter wholesale cost, retail selling price &amp; alert mark</div>
+            </div>
+          </div>
+
+          <form id="addItemForm" onsubmit="handleAddItem(event)">
+            <div class="form-grid three-col">
+              <div class="form-group" style="grid-column: 1 / -1;">
+                <label class="form-label" for="itemName">Item Name *</label>
+                <input type="text" id="itemName" class="form-input" placeholder="e.g. Aashirvaad Shudh Chakki Atta 5kg" required>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="itemCost">Cost Price (₹) *</label>
+                <input type="number" id="itemCost" class="form-input number-input" step="0.25" min="0" placeholder="e.g. 210" required>
+                <span class="input-hint">Wholesale cost per unit</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="itemPrice">Selling Price (₹) *</label>
+                <input type="number" id="itemPrice" class="form-input number-input" step="0.25" min="0" placeholder="e.g. 245" required>
+                <span class="input-hint">Customer retail price</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="itemQty">Initial Quantity *</label>
+                <input type="number" id="itemQty" class="form-input number-input" min="0" step="1" placeholder="e.g. 20" required>
+                <span class="input-hint">Packs / units in store</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="itemAlert">Alert When Stock Falls To</label>
+                <input type="number" id="itemAlert" class="form-input number-input" min="0" step="1" value="5">
+                <span class="input-hint">Defaults to 5 units</span>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display: flex; justify-content: flex-end;">
+              <button type="submit" class="btn btn-primary">
+                + Save to Stock
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Stock Table -->
+        <div class="ledger-sheet">
+          <div class="section-title-bar">
+            <div>
+              <h2 class="section-title">Current Inventory</h2>
+              <div class="section-subtitle">Real-time stock levels, margin % &amp; restock controls</div>
+            </div>
+          </div>
+
+          <div class="table-scroll-container">
+            <table class="ledger-table">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th class="align-right">Cost</th>
+                  <th class="align-right">Price</th>
+                  <th class="align-right">Margin</th>
+                  <th class="align-right">In Stock</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="stockTbody">
+                <!-- populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ======================================================================
+           TAB 3: RECORD A SALE
+           ====================================================================== -->
+      <section id="pane-sale" class="tab-pane" role="tabpanel">
+        <div class="ledger-sheet">
+          <div class="section-title-bar">
+            <div>
+              <h2 class="section-title">Counter Sale Register</h2>
+              <div class="section-subtitle">Select item, quantity and payment mode</div>
+            </div>
+          </div>
+
+          <form id="recordSaleForm" onsubmit="handleRecordSale(event)">
+            <div class="form-grid sale-grid">
+              
+              <!-- Item Selector -->
+              <div class="form-group">
+                <label class="form-label" for="saleItemSelect">Choose Item (In Stock) *</label>
+                <select id="saleItemSelect" class="form-select" onchange="updateSalePreview()" required>
+                  <option value="">-- Select an item --</option>
+                </select>
+              </div>
+
+              <!-- Quantity -->
+              <div class="form-group">
+                <label class="form-label" for="saleQty">Quantity *</label>
+                <input type="number" id="saleQty" class="form-input number-input" min="1" step="1" value="1" oninput="updateSalePreview()" required>
+                <span id="saleStockHint" class="input-hint"></span>
+              </div>
+
+              <!-- Payment Method -->
+              <div class="form-group">
+                <label class="form-label" for="salePaymentMethod">Payment Method *</label>
+                <select id="salePaymentMethod" class="form-select" onchange="handlePaymentMethodChange()" required>
+                  <option value="Cash">Cash (Rokda)</option>
+                  <option value="UPI">UPI (GPay / PhonePe / Paytm)</option>
+                  <option value="Card">Debit / Credit Card</option>
+                  <option value="Credit">Credit (Udhar / Khata)</option>
+                </select>
+              </div>
+
+            </div>
+
+            <!-- Customer field revealed only for Credit -->
+            <div id="creditCustomerGroup" class="form-group" style="display: none; margin-top: 14px;">
+              <label class="form-label" for="saleCustomerName">Customer Name (Khata) *</label>
+              <input type="text" id="saleCustomerName" class="form-input" list="customerDataList" placeholder="e.g. Ramesh Kumar (Sharma ji)" autocomplete="off">
+              <datalist id="customerDataList"></datalist>
+              <span class="input-hint">Auto-matches existing customer or registers a new khata account.</span>
+            </div>
+
+            <!-- Live Calculation Preview -->
+            <div id="salePreviewCard" class="sale-preview-card" style="display: none;">
+              <div>
+                <strong>Transaction Preview: </strong>
+                <span id="salePreviewText" class="sale-preview-calc"></span>
+              </div>
+              <div>
+                <span>Profit: </span>
+                <span id="salePreviewProfit" class="sale-preview-profit"></span>
+              </div>
+            </div>
+
+            <div id="saleErrorMsg" style="color: var(--rust); font-weight: 600; font-size: 0.9rem; margin-top: 10px; display: none;"></div>
+
+            <div style="margin-top: 16px; display: flex; justify-content: flex-end;">
+              <button type="submit" id="submitSaleBtn" class="btn btn-success" style="font-size: 1.05rem;">
+                ✓ Save Sale &amp; Update Stock
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           TAB 4: SALES HISTORY
+           ====================================================================== -->
+      <section id="pane-history" class="tab-pane" role="tabpanel">
+        <div class="ledger-sheet">
+          <div class="section-title-bar">
+            <div>
+              <h2 class="section-title">Sales History Register</h2>
+              <div class="section-subtitle">Complete chronological record of all counter transactions</div>
+            </div>
+            <button type="button" class="btn btn-danger btn-sm" onclick="handleClearSalesHistory()">
+              🗑️ Clear History
+            </button>
+          </div>
+
+          <div class="table-scroll-container">
+            <table class="ledger-table">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th class="align-right">Qty</th>
+                  <th class="align-right">Price</th>
+                  <th class="align-right">Sold For</th>
+                  <th class="align-right">Cost</th>
+                  <th class="align-right">Profit</th>
+                  <th>Payment</th>
+                  <th>When</th>
+                </tr>
+              </thead>
+              <tbody id="fullSalesTbody">
+                <!-- populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================================
+           TAB 5: CREDIT BOOK (KHATA)
+           ====================================================================== -->
+      <section id="pane-khata" class="tab-pane" role="tabpanel">
+        
+        <!-- Form to Give Item on Credit -->
+        <div class="ledger-sheet">
+          <div class="section-title-bar">
+            <div>
+              <h2 class="section-title">Give Item on Credit (Khata Entry)</h2>
+              <div class="section-subtitle">Record goods taken on udhar; directly debits inventory</div>
+            </div>
+          </div>
+
+          <form id="creditSaleForm" onsubmit="handleCreditEntry(event)">
+            <div class="form-grid three-col">
+              <div class="form-group">
+                <label class="form-label" for="khataCustomerName">Customer Name *</label>
+                <input type="text" id="khataCustomerName" class="form-input" list="customerDataList" placeholder="e.g. Suresh Painter" required autocomplete="off">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="khataItemSelect">Item (From Stock) *</label>
+                <select id="khataItemSelect" class="form-select" required>
+                  <option value="">-- Choose item --</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="khataQty">Quantity *</label>
+                <input type="number" id="khataQty" class="form-input number-input" min="1" step="1" value="1" required>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; display: flex; justify-content: flex-end;">
+              <button type="submit" class="btn btn-primary">
+                + Post to Customer Khata
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Table 1: Balance Owed by Customer -->
+        <div class="ledger-sheet">
+          <div class="section-title-bar">
+            <div>
+              <h2 class="section-title">Balance Owed by Customer</h2>
+              <div class="section-subtitle">Net balance: Total credit given minus repayments recorded</div>
+            </div>
+          </div>
+
+          <div class="table-scroll-container">
+            <table class="ledger-table">
+              <thead>
+                <tr>
+                  <th>Customer Name</th>
+                  <th class="align-right">Net Balance</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="customerBalanceTbody">
+                <!-- populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Table 2: Items Given on Credit (Always visible) -->
+        <div class="ledger-sheet">
+          <div class="section-title-bar">
+            <div>
+              <h2 class="section-title">Items Given on Credit</h2>
+              <div class="section-subtitle">All udhar ledger line items (always visible, no clicking to expand)</div>
+            </div>
+          </div>
+
+          <div class="table-scroll-container">
+            <table class="ledger-table">
+              <thead>
+                <tr>
+                  <th>When</th>
+                  <th>Customer</th>
+                  <th>Item</th>
+                  <th class="align-right">Qty</th>
+                  <th class="align-right">Price</th>
+                  <th class="align-right">Amount</th>
+                </tr>
+              </thead>
+              <tbody id="creditTxTbody">
+                <!-- populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="ledger-footer">
+      <div>
+        <div class="footer-status-pill">
+          <span class="status-dot"></span>
+          <span id="storageStatusText">Saved on this device only</span>
+        </div>
+      </div>
+      <div>Room No 114 Kirana &bull; Ledger system &bull; Screen lock enabled for session</div>
+    </footer>
+
+  </div>
+
+  <!-- ==========================================================================
+       CUSTOM IN-PAGE MODAL (ALERT / CONFIRM / PROMPT REPLACEMENT)
+       ========================================================================== -->
+  <div id="appModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <h3 id="modalTitle" class="modal-title">Notice</h3>
+      <div id="modalBody" class="modal-body"></div>
+      
+      <div id="modalInputWrap" class="modal-input-wrap" style="display: none;">
+        <label id="modalInputLabel" for="modalInputField" class="form-label"></label>
+        <input type="text" id="modalInputField" class="form-input number-input" autocomplete="off">
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" id="modalCancelBtn" class="btn btn-outline btn-sm">Cancel</button>
+        <button type="button" id="modalConfirmBtn" class="btn btn-primary btn-sm">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       5 PARTNERS LIVE SYNC MODAL
+       ========================================================================== -->
+  <div id="syncModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="syncModalTitle">
+    <div class="modal-card" style="max-width: 480px;">
+      <h3 id="syncModalTitle" class="modal-title">👥 5 Partners Live Stock Sync</h3>
+      <div class="modal-body">
+        <p style="margin-bottom: 12px; font-size: 0.88rem; color: var(--text-muted);">
+          Keep live stock, sales &amp; khata ledgers synchronized in real-time across all 5 partners' mobile phones.
+        </p>
+
+        <div style="background: var(--paper-warm); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between;">
+          <div>
+            <div style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">Sync Status</div>
+            <div id="syncModalStatusText" style="font-weight: 700; font-family: var(--font-num); color: var(--betel-green);">🟢 Live Sync Active</div>
+          </div>
+          <button type="button" class="btn btn-outline btn-sm" onclick="triggerManualSync()">↻ Sync Now</button>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label" for="syncPublicUrlDisplay">🌐 Public Live Link (Works 100 km away on 4G / 5G)</label>
+          <div style="display: flex; gap: 6px;">
+            <input type="text" id="syncPublicUrlDisplay" class="form-input" readonly value="https://arg-edwards-lamp-otherwise.trycloudflare.com">
+            <button type="button" class="btn btn-success btn-sm" onclick="copyPublicUrl()">Copy</button>
+          </div>
+          <span class="input-hint">Send this link to the partner 100 km away. Works on any phone network!</span>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label" for="syncWifiUrlDisplay">📶 Store Wi-Fi Link (Inside shop)</label>
+          <div style="display: flex; gap: 6px;">
+            <input type="text" id="syncWifiUrlDisplay" class="form-input" readonly value="http://10.187.3.226:8080/index.html">
+            <button type="button" class="btn btn-primary btn-sm" onclick="copyWifiUrl()">Copy</button>
+          </div>
+          <span class="input-hint">Use this when inside the shop connected to the store Wi-Fi router.</span>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 12px;">
+          <label class="form-label" for="syncRoomKeyInput">Store Sync Room Key</label>
+          <input type="text" id="syncRoomKeyInput" class="form-input" value="room114_kirana_live">
+          <span class="input-hint">Must match across all 5 phones to share the same stock and sales ledger.</span>
+        </div>
+
+        <!-- Active Database Status -->
+        <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 12px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+            <span style="font-weight: 700; font-size: 0.85rem; color: #065f46;">🗄️ Database: Created &amp; Active</span>
+            <span style="font-size: 0.75rem; background: #10b981; color: white; padding: 2px 7px; border-radius: 10px; font-weight: 600;">Auto-Saving</span>
+          </div>
+          <p style="margin: 0; font-size: 0.78rem; color: #047857; line-height: 1.4;">
+            Your database file (<code>store_state.json</code>) is running automatically. Every sale, restock, and khata entry is saved permanently on disk and synced across all devices. No manual database setup needed!
+          </p>
+        </div>
+
+        <details style="margin-bottom: 14px; font-size: 0.82rem; color: var(--text-muted);">
+          <summary style="cursor: pointer; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">⚙️ Advanced: Optional External Firebase DB</summary>
+          <div class="form-group" style="margin-top: 8px; margin-bottom: 6px;">
+            <label class="form-label" for="syncFirebaseUrlInput">Firebase Realtime Database URL (Optional)</label>
+            <input type="text" id="syncFirebaseUrlInput" class="form-input" placeholder="https://your-project-default-rtdb.firebaseio.com/shop/state.json">
+            <span class="input-hint">Only needed if you want a third-party cloud database without running this PC.</span>
+          </div>
+        </details>
+
+        <div style="font-size: 0.8rem; background: var(--bg-page); border-left: 3px solid var(--turmeric); padding: 8px 10px; border-radius: 2px; color: var(--text-main);">
+          ⚡ <strong>Live Multi-Device:</strong> When any partner records a sale or restocks on their phone, all other 4 phones reflect the updated inventory and profit figures in real-time.
+        </div>
+      </div>
+
+      <div class="modal-actions" style="margin-top: 16px;">
+        <button type="button" class="btn btn-outline btn-sm" onclick="closePartnerSyncModal()">Close</button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="savePartnerSyncConfig()">Save &amp; Connect</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       APPLICATION LOGIC & DATA STORE
+       ========================================================================== -->
+  <script>
+    /* --------------------------------------------------------------------------
+       CONSTANTS & STATE
+       -------------------------------------------------------------------------- */
+    const PASS_KEY = "0471";
+    const STORAGE_KEY = "room114_kirana_v1";
+
+    // Application state
+    let state = {
+      stock: [],        // { id, name, cost, price, qty, alertThreshold }
+      sales: [],        // { id, itemId, itemName, qty, unitPrice, unitCost, revenue, cost, profit, paymentMethod, customer, timestamp }
+      customers: [],    // { id, name }
+      creditTx: []      // { id, type: 'CREDIT'|'PAYMENT', customer, itemId, itemName, qty, unitPrice, amount, timestamp, note }
+    };
+
+    /* --------------------------------------------------------------------------
+       STARTER DATA (FOR FRESH ROOM 114 DEPLOYMENTS)
+       -------------------------------------------------------------------------- */
+    const DEFAULT_STARTER_ITEMS = [
+      { id: "stk_1", name: "Aashirvaad Shudh Chakki Atta 5kg", cost: 215, price: 250, qty: 14, alertThreshold: 5 },
+      { id: "stk_2", name: "Tata Salt Iodised 1kg", cost: 22, price: 28, qty: 35, alertThreshold: 10 },
+      { id: "stk_3", name: "Fortune Sunlite Refined Oil 1L", cost: 118, price: 135, qty: 12, alertThreshold: 4 },
+      { id: "stk_4", name: "Toor Dal Premium 1kg", cost: 145, price: 170, qty: 3, alertThreshold: 5 },
+      { id: "stk_5", name: "Amul Taaza Homogenised Milk 1L", cost: 58, price: 68, qty: 8, alertThreshold: 5 },
+      { id: "stk_6", name: "Parle-G Gold Biscuits 1kg", cost: 95, price: 120, qty: 2, alertThreshold: 4 },
+      { id: "stk_7", name: "Taj Mahal Tea 250g", cost: 160, price: 195, qty: 11, alertThreshold: 3 },
+      { id: "stk_8", name: "Maggi 2-Minute Masala Noodles 4-Pack", cost: 48, price: 56, qty: 18, alertThreshold: 6 }
+    ];
+
+    /* --------------------------------------------------------------------------
+       HELPERS: ESCAPING, NUMBERS & DATES
+       -------------------------------------------------------------------------- */
+    function escapeHTML(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // Precise rounding to 2 decimals
+    function round2(num) {
+      return Math.round((Number(num) + Number.EPSILON) * 100) / 100;
+    }
+
+    /**
+     * Format number into Indian numbering system (e.g. 1,25,000)
+     * Handles negative values properly: -₹20, never ₹-20.
+     */
+    function formatIndianRupees(val, showZeroAsFree = false) {
+      const num = round2(Number(val) || 0);
+      if (num === 0 && showZeroAsFree) return '₹0';
+
+      const isNegative = num < 0;
+      const absVal = Math.abs(num);
+
+      // Split into integer and decimal parts
+      const parts = absVal.toFixed(2).split('.');
+      let intPart = parts[0];
+      const decPart = parts[1];
+
+      // Indian comma format: last 3 digits, then sets of 2
+      let lastThree = intPart.substring(intPart.length - 3);
+      let otherNumbers = intPart.substring(0, intPart.length - 3);
+      if (otherNumbers !== '') {
+        lastThree = ',' + lastThree;
+      }
+      const formattedInt = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree;
+      
+      const displayDec = (decPart === '00') ? '' : '.' + decPart;
+      const formattedNum = formattedInt + displayDec;
+
+      return isNegative ? `-₹${formattedNum}` : `₹${formattedNum}`;
+    }
+
+    function formatDateTime(isoString) {
+      if (!isoString) return '';
+      const date = new Date(isoString);
+      if (isNaN(date.getTime())) return '';
+
+      const now = new Date();
+      const isToday = (
+        date.getDate() === now.getDate() &&
+        date.getMonth() === now.getMonth() &&
+        date.getFullYear() === now.getFullYear()
+      );
+
+      const hours = date.getHours();
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const formattedHours = hours % 12 || 12;
+      const timeStr = `${formattedHours}:${minutes} ${ampm}`;
+
+      if (isToday) {
+        return `Today, ${timeStr}`;
+      }
+
+      const day = String(date.getDate()).padStart(2, '0');
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const monthStr = monthNames[date.getMonth()];
+      return `${day} ${monthStr}, ${timeStr}`;
+    }
+
+    function generateId(prefix = 'id') {
+      return `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
+    }
+
+    /* --------------------------------------------------------------------------
+       STORAGE & 5-PARTNER LIVE SYNC ENGINE
+       -------------------------------------------------------------------------- */
+    const SYNC_CONFIG_KEY = "room114_sync_cfg_v1";
+    let syncConfig = {
+      roomKey: "room114_kirana_live",
+      customFirebaseUrl: ""
+    };
+
+    let isLocalSaving = false;
+    let cloudDebounceTimer = null;
+
+    function loadSyncConfig() {
+      try {
+        const stored = localStorage.getItem(SYNC_CONFIG_KEY);
+        if (stored) {
+          syncConfig = Object.assign(syncConfig, JSON.parse(stored));
+        }
+      } catch (e) {}
+    }
+
+    function loadState() {
+      loadSyncConfig();
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          state.stock = Array.isArray(parsed.stock) ? parsed.stock : [];
+          state.sales = Array.isArray(parsed.sales) ? parsed.sales : [];
+          state.customers = Array.isArray(parsed.customers) ? parsed.customers : [];
+          state.creditTx = Array.isArray(parsed.creditTx) ? parsed.creditTx : [];
+          state._updatedAt = parsed._updatedAt || Date.now();
+        } else {
+          // Initialize with room 114 starter stock
+          state.stock = [...DEFAULT_STARTER_ITEMS];
+          state.sales = [];
+          state.customers = [];
+          state.creditTx = [];
+          state._updatedAt = Date.now();
+          persist();
+        }
+      } catch (err) {
+        console.error("Failed to read from localStorage", err);
+        state.stock = [...DEFAULT_STARTER_ITEMS];
+        state.sales = [];
+        state.customers = [];
+        state.creditTx = [];
+        state._updatedAt = Date.now();
+      }
+
+      // Initial cloud pull
+      pullFromCloud();
+    }
+
+    /**
+     * Unified persist function:
+     * - Saves locally to localStorage (offline cache)
+     * - Debounces remote push by ~250ms
+     * - Prevents race conditions with isLocalSaving
+     */
+    function persist() {
+      state._updatedAt = Date.now();
+      isLocalSaving = true;
+
+      // 1. Instant local write (offline first)
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (err) {
+        console.error("Failed to write to localStorage", err);
+        updateStorageStatus("Storage write error (Quota exceeded)");
+      }
+
+      // 2. Debounce cloud sync by ~250ms
+      updateStorageStatus("🟡 Syncing across 5 devices...");
+      clearTimeout(cloudDebounceTimer);
+      cloudDebounceTimer = setTimeout(() => {
+        pushToCloud();
+      }, 250);
+    }
+
+    async function pushToCloud() {
+      isLocalSaving = true;
+      const payload = {
+        stock: state.stock,
+        sales: state.sales,
+        customers: state.customers,
+        creditTx: state.creditTx,
+        _updatedAt: state._updatedAt || Date.now()
+      };
+
+      let syncedOk = false;
+
+      // 1. Sync to local Wi-Fi server endpoint (/api/sync)
+      try {
+        const res = await fetch('/api/sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          syncedOk = true;
+        }
+      } catch (err) {
+        // server endpoint not reachable or offline
+      }
+
+      // 2. Sync to custom Firebase Realtime Database URL if configured
+      if (syncConfig.customFirebaseUrl) {
+        try {
+          let fbUrl = syncConfig.customFirebaseUrl.trim();
+          if (!fbUrl.endsWith('.json')) {
+            fbUrl = fbUrl.replace(/\/$/, '') + '/shop/state.json';
+          }
+          const fbRes = await fetch(fbUrl, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          if (fbRes.ok) {
+            syncedOk = true;
+          }
+        } catch (err) {}
+      }
+
+      isLocalSaving = false;
+      if (syncedOk) {
+        updateStorageStatus("🟢 Synced across your devices");
+        updateHeaderSyncBadge(true);
+      } else {
+        updateStorageStatus("Saved on this device only");
+        updateHeaderSyncBadge(false);
+      }
+    }
+
+    async function pullFromCloud() {
+      // RULE: Never let an incoming snapshot overwrite a local change that has not finished saving!
+      if (isLocalSaving) {
+        return;
+      }
+
+      let remote = null;
+
+      // Try local Wi-Fi server
+      try {
+        const res = await fetch('/api/sync', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data._updatedAt) {
+            remote = data;
+          }
+        }
+      } catch (err) {}
+
+      // Try custom Firebase URL if configured
+      if (!remote && syncConfig.customFirebaseUrl) {
+        try {
+          let fbUrl = syncConfig.customFirebaseUrl.trim();
+          if (!fbUrl.endsWith('.json')) {
+            fbUrl = fbUrl.replace(/\/$/, '') + '/shop/state.json';
+          }
+          const fbRes = await fetch(fbUrl, { cache: 'no-store' });
+          if (fbRes.ok) {
+            const fbData = await fbRes.json();
+            if (fbData && fbData._updatedAt) {
+              remote = fbData;
+            }
+          }
+        } catch (err) {}
+      }
+
+      if (!remote || !remote._updatedAt) {
+        return;
+      }
+
+      // Merge only if remote is newer
+      if (remote._updatedAt > (state._updatedAt || 0)) {
+        state.stock = Array.isArray(remote.stock) ? remote.stock : state.stock;
+        state.sales = Array.isArray(remote.sales) ? remote.sales : state.sales;
+        state.customers = Array.isArray(remote.customers) ? remote.customers : state.customers;
+        state.creditTx = Array.isArray(remote.creditTx) ? remote.creditTx : state.creditTx;
+        state._updatedAt = remote._updatedAt;
+
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (e) {}
+
+        renderCurrentTabViews();
+        updateStorageStatus("🟢 Synced across your devices");
+        updateHeaderSyncBadge(true);
+      }
+    }
+
+    function renderCurrentTabViews() {
+      renderDashboard();
+      renderStock();
+      renderSalesHistory();
+      renderKhata();
+
+      const saleSelect = document.getElementById('saleItemSelect');
+      const curSelected = saleSelect ? saleSelect.value : null;
+      populateSaleItemSelect();
+      if (curSelected && saleSelect) {
+        saleSelect.value = curSelected;
+      }
+      populateKhataItemSelect();
+    }
+
+    function updateStorageStatus(text) {
+      const el = document.getElementById("storageStatusText");
+      if (el) el.textContent = text;
+      const modalStatus = document.getElementById("syncModalStatusText");
+      if (modalStatus) modalStatus.textContent = text;
+    }
+
+    function updateHeaderSyncBadge(online) {
+      const el = document.getElementById('headerSyncText');
+      if (el) {
+        el.textContent = online ? '🟢 5 Partners Synced' : '☁️ 5 Partners Sync';
+      }
+    }
+
+    // Modal controls for Partner Sync
+    function openPartnerSyncModal() {
+      loadSyncConfig();
+      document.getElementById('syncRoomKeyInput').value = syncConfig.roomKey || 'room114_kirana_live';
+      document.getElementById('syncFirebaseUrlInput').value = syncConfig.customFirebaseUrl || '';
+      document.getElementById('syncModal').classList.add('active');
+    }
+
+    function closePartnerSyncModal() {
+      document.getElementById('syncModal').classList.remove('active');
+    }
+
+    function savePartnerSyncConfig() {
+      syncConfig.roomKey = (document.getElementById('syncRoomKeyInput').value || 'room114_kirana_live').trim();
+      syncConfig.customFirebaseUrl = (document.getElementById('syncFirebaseUrlInput').value || '').trim();
+      try {
+        localStorage.setItem(SYNC_CONFIG_KEY, JSON.stringify(syncConfig));
+      } catch (e) {}
+      closePartnerSyncModal();
+      persist();
+      triggerManualSync();
+    }
+
+    function copyPublicUrl() {
+      const urlInput = document.getElementById('syncPublicUrlDisplay');
+      if (urlInput) {
+        navigator.clipboard.writeText(urlInput.value).then(() => {
+          alertNotice("🌐 Public live link copied! Send it via WhatsApp to the partner 100 km away. They can access it on 4G/5G!", "Link Copied");
+        }).catch(() => {
+          alertNotice("Please copy this URL manually: " + urlInput.value);
+        });
+      }
+    }
+
+    function copyWifiUrl() {
+      const urlInput = document.getElementById('syncWifiUrlDisplay');
+      if (urlInput) {
+        navigator.clipboard.writeText(urlInput.value).then(() => {
+          alertNotice("Store Wi-Fi link copied! Send it to partners inside the shop.", "Link Copied");
+        }).catch(() => {
+          alertNotice("Please copy this URL manually: " + urlInput.value);
+        });
+      }
+    }
+
+    async function triggerManualSync() {
+      updateStorageStatus("🟡 Checking for updates...");
+      await pullFromCloud();
+      await pushToCloud();
+      alertNotice("Sync check complete! All devices are synchronized.", "Synced");
+    }
+
+    // Periodic pull every 2.5 seconds & on tab visibility
+    setInterval(pullFromCloud, 2500);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        pullFromCloud();
+      }
+    });
+    window.addEventListener('focus', pullFromCloud);
+
+    /* --------------------------------------------------------------------------
+       CUSTOM MODAL ASYNC HELPERS (REPLACES ALERT / CONFIRM / PROMPT)
+       -------------------------------------------------------------------------- */
+    let currentModalResolver = null;
+
+    function showModal({ title, body, showInput = false, inputLabel = '', inputVal = '', inputType = 'text', confirmText = 'OK', cancelText = 'Cancel', showCancel = true }) {
+      return new Promise((resolve) => {
+        currentModalResolver = resolve;
+        
+        document.getElementById('modalTitle').textContent = title;
+        document.getElementById('modalBody').innerHTML = body;
+        
+        const inputWrap = document.getElementById('modalInputWrap');
+        const inputField = document.getElementById('modalInputField');
+        const labelField = document.getElementById('modalInputLabel');
+        const confirmBtn = document.getElementById('modalConfirmBtn');
+        const cancelBtn = document.getElementById('modalCancelBtn');
+
+        if (showInput) {
+          inputWrap.style.display = 'block';
+          labelField.textContent = inputLabel;
+          inputField.value = inputVal;
+          inputField.type = inputType;
+          setTimeout(() => inputField.focus(), 50);
+        } else {
+          inputWrap.style.display = 'none';
+        }
+
+        confirmBtn.textContent = confirmText;
+        cancelBtn.textContent = cancelText;
+        cancelBtn.style.display = showCancel ? 'inline-flex' : 'none';
+
+        document.getElementById('appModal').classList.add('active');
+
+        // Handlers
+        const onConfirm = () => {
+          cleanup();
+          resolve(showInput ? inputField.value : true);
+        };
+
+        const onCancel = () => {
+          cleanup();
+          resolve(showInput ? null : false);
+        };
+
+        const onKey = (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            onConfirm();
+          } else if (e.key === 'Escape' && showCancel) {
+            e.preventDefault();
+            onCancel();
+          }
+        };
+
+        function cleanup() {
+          confirmBtn.removeEventListener('click', onConfirm);
+          cancelBtn.removeEventListener('click', onCancel);
+          inputField.removeEventListener('keydown', onKey);
+          document.getElementById('appModal').classList.remove('active');
+        }
+
+        confirmBtn.addEventListener('click', onConfirm);
+        cancelBtn.addEventListener('click', onCancel);
+        inputField.addEventListener('keydown', onKey);
+      });
+    }
+
+    async function askConfirm(message, title = "Confirm Action") {
+      return await showModal({
+        title,
+        body: escapeHTML(message),
+        confirmText: "Yes, Proceed",
+        cancelText: "Cancel",
+        showCancel: true
+      });
+    }
+
+    async function askPrompt(message, defaultVal = "", inputType = "text", title = "Input Required") {
+      return await showModal({
+        title,
+        body: `<p>${escapeHTML(message)}</p>`,
+        showInput: true,
+        inputLabel: "Enter value:",
+        inputVal: defaultVal,
+        inputType,
+        confirmText: "Submit",
+        cancelText: "Cancel",
+        showCancel: true
+      });
+    }
+
+    async function alertNotice(message, title = "Notice") {
+      return await showModal({
+        title,
+        body: `<p>${escapeHTML(message)}</p>`,
+        showCancel: false,
+        confirmText: "Understood"
+      });
+    }
+
+    /* --------------------------------------------------------------------------
+       PASS KEY LOCK SCREEN LOGIC
+       -------------------------------------------------------------------------- */
+    function checkSessionLock() {
+      const isUnlocked = sessionStorage.getItem("room114_unlocked") === "true";
+      const lockScreen = document.getElementById("lockScreen");
+      const appShell = document.getElementById("appShell");
+
+      if (isUnlocked) {
+        lockScreen.style.display = "none";
+        appShell.style.display = "flex";
+        renderAll();
+      } else {
+        lockScreen.style.display = "flex";
+        appShell.style.display = "none";
+        document.getElementById("passKeyInput").value = "";
+        document.getElementById("lockError").textContent = "";
+        setTimeout(() => {
+          document.getElementById("passKeyInput").focus();
+        }, 100);
+      }
+    }
+
+    function handleUnlock(e) {
+      e.preventDefault();
+      const input = document.getElementById("passKeyInput");
+      const err = document.getElementById("lockError");
+      const entered = input.value.trim();
+
+      if (entered === PASS_KEY) {
+        sessionStorage.setItem("room114_unlocked", "true");
+        err.textContent = "";
+        input.value = "";
+        checkSessionLock();
+      } else {
+        err.textContent = "Wrong pass key. Try again.";
+        input.value = "";
+        input.focus();
+      }
+    }
+
+    function lockRegister() {
+      sessionStorage.removeItem("room114_unlocked");
+      checkSessionLock();
+    }
+
+    /* --------------------------------------------------------------------------
+       TAB NAVIGATION
+       -------------------------------------------------------------------------- */
+    function switchTab(tabName) {
+      const tabs = ['dashboard', 'stock', 'sale', 'history', 'khata'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tab-${t}`);
+        const pane = document.getElementById(`pane-${t}`);
+        if (btn) {
+          btn.classList.toggle('active', t === tabName);
+          btn.setAttribute('aria-selected', t === tabName ? 'true' : 'false');
+        }
+        if (pane) {
+          pane.classList.toggle('active', t === tabName);
+        }
+      });
+
+      // Tab specific re-renderings / pre-select updates
+      if (tabName === 'sale') {
+        populateSaleItemSelect();
+        updateSalePreview();
+      } else if (tabName === 'khata') {
+        populateKhataItemSelect();
+      } else if (tabName === 'dashboard') {
+        renderDashboard();
+      } else if (tabName === 'stock') {
+        renderStock();
+      } else if (tabName === 'history') {
+        renderSalesHistory();
+      }
+    }
+
+    /* --------------------------------------------------------------------------
+       CUSTOMER MANAGEMENT (KHATA)
+       -------------------------------------------------------------------------- */
+    function findOrCreateCustomer(name) {
+      const cleanName = (name || '').trim();
+      if (!cleanName) return null;
+
+      const existing = state.customers.find(c => c.name.toLowerCase() === cleanName.toLowerCase());
+      if (existing) {
+        return existing;
+      }
+
+      const newCustomer = {
+        id: generateId('cust'),
+        name: cleanName
+      };
+      state.customers.push(newCustomer);
+      persist();
+      updateCustomerDatalist();
+      return newCustomer;
+    }
+
+    function updateCustomerDatalist() {
+      const datalist = document.getElementById('customerDataList');
+      if (!datalist) return;
+      datalist.innerHTML = state.customers
+        .map(c => `<option value="${escapeHTML(c.name)}"></option>`)
+        .join('');
+    }
+
+    /**
+     * Compute customer balances:
+     * Balance = total credit given minus payments received.
+     * Overpaid customers have negative balance.
+     */
+    function getCustomerBalances() {
+      const balances = {};
+      state.customers.forEach(c => {
+        balances[c.name.toLowerCase()] = {
+          name: c.name,
+          balance: 0,
+          id: c.id
+        };
+      });
+
+      state.creditTx.forEach(tx => {
+        const key = (tx.customer || '').trim().toLowerCase();
+        if (!key) return;
+        if (!balances[key]) {
+          balances[key] = {
+            name: tx.customer,
+            balance: 0,
+            id: generateId('cust')
+          };
+        }
+
+        const amt = round2(Number(tx.amount) || 0);
+        if (tx.type === 'CREDIT') {
+          balances[key].balance = round2(balances[key].balance + amt);
+        } else if (tx.type === 'PAYMENT') {
+          balances[key].balance = round2(balances[key].balance - amt);
+        }
+      });
+
+      return Object.values(balances);
+    }
+
+    /* --------------------------------------------------------------------------
+       DASHBOARD METRICS & RENDERING
+       -------------------------------------------------------------------------- */
+    function renderDashboard() {
+      const now = new Date();
+      const todayDateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+
+      let salesToday = 0;
+      let profitToday = 0;
+      let salesAllTime = 0;
+      let profitAllTime = 0;
+
+      state.sales.forEach(s => {
+        const rev = round2(Number(s.revenue) || 0);
+        const prof = round2(Number(s.profit) || 0);
+        salesAllTime = round2(salesAllTime + rev);
+        profitAllTime = round2(profitAllTime + prof);
+
+        if (s.timestamp && s.timestamp.startsWith(todayDateStr)) {
+          salesToday = round2(salesToday + rev);
+          profitToday = round2(profitToday + prof);
+        }
+      });
+
+      // Stock value at cost
+      let stockValue = 0;
+      let lowStockItems = [];
+
+      state.stock.forEach(item => {
+        const qty = Number(item.qty) || 0;
+        const cost = Number(item.cost) || 0;
+        const threshold = Number(item.alertThreshold !== undefined ? item.alertThreshold : 5);
+
+        stockValue = round2(stockValue + (qty * cost));
+        if (qty <= threshold) {
+          lowStockItems.push(item);
+        }
+      });
+
+      // Credit outstanding (sum of all positive balances)
+      const balances = getCustomerBalances();
+      let totalCreditOwed = 0;
+      balances.forEach(b => {
+        if (b.balance > 0) {
+          totalCreditOwed = round2(totalCreditOwed + b.balance);
+        }
+      });
+
+      // Update DOM
+      document.getElementById('dashSalesToday').textContent = formatIndianRupees(salesToday);
+      
+      const profitTodayEl = document.getElementById('dashProfitToday');
+      profitTodayEl.textContent = formatIndianRupees(profitToday);
+      profitTodayEl.className = 'summary-value ' + (profitToday < 0 ? 'negative' : (profitToday > 0 ? 'positive' : ''));
+
+      document.getElementById('dashSalesAllTime').textContent = formatIndianRupees(salesAllTime);
+
+      const profitAllEl = document.getElementById('dashProfitAllTime');
+      profitAllEl.textContent = formatIndianRupees(profitAllTime);
+      profitAllEl.className = 'summary-value ' + (profitAllTime < 0 ? 'negative' : (profitAllTime > 0 ? 'positive' : ''));
+
+      document.getElementById('dashStockValue').textContent = formatIndianRupees(stockValue);
+      document.getElementById('dashCreditOwed').textContent = formatIndianRupees(totalCreditOwed);
+
+      // Low Stock Alert Box & Tab Badge
+      const lowBox = document.getElementById('lowStockAlertBox');
+      const lowTagContainer = document.getElementById('lowStockTagContainer');
+      const lowBadge = document.getElementById('lowStockTabBadge');
+
+      if (lowStockItems.length > 0) {
+        lowBox.style.display = 'block';
+        lowBadge.style.display = 'inline-block';
+        lowBadge.textContent = lowStockItems.length;
+        document.getElementById('lowStockCountText').textContent = `${lowStockItems.length} item${lowStockItems.length > 1 ? 's' : ''}`;
+        
+        lowTagContainer.innerHTML = lowStockItems.map(item => `
+          <span class="low-stock-tag">
+            <span>${escapeHTML(item.name)}</span>
+            <strong>${item.qty} left</strong> (alert: ${item.alertThreshold ?? 5})
+          </span>
+        `).join('');
+      } else {
+        lowBox.style.display = 'none';
+        lowBadge.style.display = 'none';
+      }
+
+      // Recent 8 Sales
+      const recentSales = state.sales.slice(-8).reverse();
+      const recentTbody = document.getElementById('recentSalesTbody');
+      
+      if (recentSales.length === 0) {
+        recentTbody.innerHTML = `<tr><td colspan="7" class="empty-ledger-state">No sales recorded yet. Click '+ New Sale' to start.</td></tr>`;
+      } else {
+        recentTbody.innerHTML = recentSales.map(s => {
+          const prof = round2(Number(s.profit) || 0);
+          const profColorClass = prof < 0 ? 'color: var(--rust); font-weight:700;' : (prof > 0 ? 'color: var(--betel-green); font-weight:700;' : '');
+          const payBadge = getPaymentBadgeHTML(s.paymentMethod, s.customer);
+
+          return `
+            <tr>
+              <td><strong>${escapeHTML(s.itemName)}</strong></td>
+              <td class="num-cell align-right">${s.qty}</td>
+              <td class="num-cell align-right">${formatIndianRupees(s.unitPrice)}</td>
+              <td class="num-cell align-right"><strong>${formatIndianRupees(s.revenue)}</strong></td>
+              <td class="num-cell align-right" style="${profColorClass}">${formatIndianRupees(prof)}</td>
+              <td>${payBadge}</td>
+              <td style="font-size: 0.8rem; color: var(--text-muted);">${formatDateTime(s.timestamp)}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+    }
+
+    function getPaymentBadgeHTML(method, customer) {
+      if (!method) return `<span class="pay-badge pay-cash">Cash</span>`;
+      const m = method.toLowerCase();
+      if (m === 'cash') return `<span class="pay-badge pay-cash">Cash</span>`;
+      if (m === 'upi') return `<span class="pay-badge pay-upi">UPI</span>`;
+      if (m === 'card') return `<span class="pay-badge pay-card">Card</span>`;
+      if (m === 'credit') {
+        const custPart = customer ? ` &bull; ${escapeHTML(customer)}` : '';
+        return `<span class="pay-badge pay-credit">Credit${custPart}</span>`;
+      }
+      return `<span class="pay-badge pay-cash">${escapeHTML(method)}</span>`;
+    }
+
+    /* --------------------------------------------------------------------------
+       TAB 2: STOCK MANAGEMENT
+       -------------------------------------------------------------------------- */
+    function renderStock() {
+      const tbody = document.getElementById('stockTbody');
+      if (state.stock.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="empty-ledger-state">No items yet. Add your first item above.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = state.stock.map(item => {
+        const cost = round2(Number(item.cost) || 0);
+        const price = round2(Number(item.price) || 0);
+        const qty = Number(item.qty) || 0;
+        const threshold = Number(item.alertThreshold !== undefined ? item.alertThreshold : 5);
+        const isLow = qty <= threshold;
+        
+        // Margin: (Selling Price - Cost) / Selling Price * 100
+        const profitPerUnit = round2(price - cost);
+        const marginPct = price > 0 ? Math.round((profitPerUnit / price) * 100) : 0;
+        const marginClass = profitPerUnit < 0 ? 'color: var(--rust); font-weight:700;' : (profitPerUnit > 0 ? 'color: var(--betel-green); font-weight:700;' : '');
+
+        return `
+          <tr class="${isLow ? 'row-low-stock' : ''}">
+            <td>
+              <strong>${escapeHTML(item.name)}</strong>
+              ${isLow ? '<span style="color: var(--rust); font-size: 0.72rem; font-weight:700; margin-left: 6px;">[LOW STOCK]</span>' : ''}
+            </td>
+            <td class="num-cell align-right">${formatIndianRupees(cost)}</td>
+            <td class="num-cell align-right">${formatIndianRupees(price)}</td>
+            <td class="num-cell align-right" style="${marginClass}">
+              ${formatIndianRupees(profitPerUnit)} (${marginPct}%)
+            </td>
+            <td class="num-cell align-right">
+              <strong style="${isLow ? 'color: var(--rust); font-size:1.05rem;' : ''}">${qty}</strong>
+            </td>
+            <td style="text-align: right; white-space: nowrap;">
+              <button type="button" class="btn btn-outline btn-sm" onclick="handleRestockItem('${item.id}')" style="margin-right: 4px;">
+                + Restock
+              </button>
+              <button type="button" class="btn btn-danger btn-sm" onclick="handleRemoveItem('${item.id}')">
+                Remove
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function handleAddItem(e) {
+      e.preventDefault();
+      const nameInput = document.getElementById('itemName');
+      const costInput = document.getElementById('itemCost');
+      const priceInput = document.getElementById('itemPrice');
+      const qtyInput = document.getElementById('itemQty');
+      const alertInput = document.getElementById('itemAlert');
+
+      const name = nameInput.value.trim();
+      const cost = round2(parseFloat(costInput.value) || 0);
+      const price = round2(parseFloat(priceInput.value) || 0);
+      const qty = parseInt(qtyInput.value, 10) || 0;
+      const alertThreshold = alertInput.value ? parseInt(alertInput.value, 10) : 5;
+
+      if (!name) {
+        alertNotice("Please enter an item name.", "Validation Error");
+        return;
+      }
+
+      if (cost < 0 || price < 0 || qty < 0) {
+        alertNotice("Cost, Price, and Quantity cannot be negative.", "Validation Error");
+        return;
+      }
+
+      const newItem = {
+        id: generateId('stk'),
+        name,
+        cost,
+        price,
+        qty,
+        alertThreshold
+      };
+
+      state.stock.push(newItem);
+      persist();
+
+      // Reset form
+      nameInput.value = '';
+      costInput.value = '';
+      priceInput.value = '';
+      qtyInput.value = '';
+      alertInput.value = '5';
+      nameInput.focus();
+
+      renderStock();
+      renderDashboard();
+      populateSaleItemSelect();
+      populateKhataItemSelect();
+    }
+
+    async function handleRestockItem(itemId) {
+      const item = state.stock.find(i => i.id === itemId);
+      if (!item) return;
+
+      const inputVal = await askPrompt(
+        `How many units of "${item.name}" would you like to add to stock? (Current: ${item.qty})`,
+        "10",
+        "number",
+        "Restock Item"
+      );
+
+      if (inputVal === null) return; // cancelled
+      const addQty = parseInt(inputVal, 10);
+      if (isNaN(addQty) || addQty <= 0) {
+        await alertNotice("Please enter a valid positive quantity to restock.");
+        return;
+      }
+
+      item.qty += addQty;
+      persist();
+      renderStock();
+      renderDashboard();
+      populateSaleItemSelect();
+      populateKhataItemSelect();
+    }
+
+    async function handleRemoveItem(itemId) {
+      const item = state.stock.find(i => i.id === itemId);
+      if (!item) return;
+
+      const confirmed = await askConfirm(
+        `Are you sure you want to remove "${item.name}" from active stock?\n\nPast sales and credit history for this item will remain untouched.`,
+        "Remove Stock Item"
+      );
+
+      if (!confirmed) return;
+
+      // Remove from stock array only, without altering sales or credit records
+      state.stock = state.stock.filter(i => i.id !== itemId);
+      persist();
+      renderStock();
+      renderDashboard();
+      populateSaleItemSelect();
+      populateKhataItemSelect();
+    }
+
+    /* --------------------------------------------------------------------------
+       TAB 3: RECORD A SALE
+       -------------------------------------------------------------------------- */
+    function populateSaleItemSelect() {
+      const select = document.getElementById('saleItemSelect');
+      if (!select) return;
+
+      const currentVal = select.value;
+      let options = `<option value="">-- Choose item --</option>`;
+
+      state.stock.forEach(item => {
+        options += `<option value="${item.id}" data-cost="${item.cost}" data-price="${item.price}" data-stock="${item.qty}">
+          ${escapeHTML(item.name)} (In stock: ${item.qty})
+        </option>`;
+      });
+
+      select.innerHTML = options;
+      if (currentVal && state.stock.some(i => i.id === currentVal)) {
+        select.value = currentVal;
+      }
+      updateSalePreview();
+    }
+
+    function handlePaymentMethodChange() {
+      const method = document.getElementById('salePaymentMethod').value;
+      const creditGroup = document.getElementById('creditCustomerGroup');
+      const custInput = document.getElementById('saleCustomerName');
+
+      if (method === 'Credit') {
+        creditGroup.style.display = 'block';
+        custInput.required = true;
+      } else {
+        creditGroup.style.display = 'none';
+        custInput.required = false;
+      }
+    }
+
+    function updateSalePreview() {
+      const select = document.getElementById('saleItemSelect');
+      const qtyInput = document.getElementById('saleQty');
+      const previewCard = document.getElementById('salePreviewCard');
+      const previewText = document.getElementById('salePreviewText');
+      const previewProfit = document.getElementById('salePreviewProfit');
+      const hint = document.getElementById('saleStockHint');
+      const errorMsg = document.getElementById('saleErrorMsg');
+      const submitBtn = document.getElementById('submitSaleBtn');
+
+      errorMsg.style.display = 'none';
+      submitBtn.disabled = false;
+
+      const selectedId = select.value;
+      if (!selectedId) {
+        previewCard.style.display = 'none';
+        hint.textContent = '';
+        return;
+      }
+
+      const item = state.stock.find(i => i.id === selectedId);
+      if (!item) {
+        previewCard.style.display = 'none';
+        return;
+      }
+
+      const qty = parseInt(qtyInput.value, 10) || 0;
+      hint.textContent = `Available in stock: ${item.qty} units`;
+
+      if (qty > item.qty) {
+        errorMsg.textContent = `Cannot sell ${qty} units. Only ${item.qty} units currently in stock!`;
+        errorMsg.style.display = 'block';
+        submitBtn.disabled = true;
+      }
+
+      const unitPrice = round2(Number(item.price) || 0);
+      const unitCost = round2(Number(item.cost) || 0);
+      const totalRev = round2(unitPrice * qty);
+      const totalCost = round2(unitCost * qty);
+      const profit = round2(totalRev - totalCost);
+
+      previewCard.style.display = 'flex';
+      previewText.textContent = `Sells for ${formatIndianRupees(totalRev)}, costs ${formatIndianRupees(totalCost)} → profit ${formatIndianRupees(profit)}`;
+
+      previewProfit.textContent = formatIndianRupees(profit);
+      if (profit >= 0) {
+        previewProfit.className = 'sale-preview-profit profit-pos';
+      } else {
+        previewProfit.className = 'sale-preview-profit profit-neg';
+      }
+    }
+
+    function handleRecordSale(e) {
+      e.preventDefault();
+      const select = document.getElementById('saleItemSelect');
+      const qtyInput = document.getElementById('saleQty');
+      const methodSelect = document.getElementById('salePaymentMethod');
+      const custInput = document.getElementById('saleCustomerName');
+
+      const itemId = select.value;
+      const qty = parseInt(qtyInput.value, 10);
+      const method = methodSelect.value;
+      const customerName = (custInput.value || '').trim();
+
+      const item = state.stock.find(i => i.id === itemId);
+      if (!item) {
+        alertNotice("Please select a valid item from stock.");
+        return;
+      }
+
+      if (isNaN(qty) || qty <= 0) {
+        alertNotice("Please enter a valid sale quantity.");
+        return;
+      }
+
+      // Block overselling
+      if (qty > item.qty) {
+        alertNotice(`Cannot sell ${qty} units. Only ${item.qty} units in stock.`);
+        return;
+      }
+
+      if (method === 'Credit' && !customerName) {
+        alertNotice("Please enter customer name for Credit (khata) sales.");
+        return;
+      }
+
+      const unitPrice = round2(Number(item.price) || 0);
+      const unitCost = round2(Number(item.cost) || 0);
+      const revenue = round2(unitPrice * qty);
+      const cost = round2(unitCost * qty);
+      const profit = round2(revenue - cost);
+      const timestamp = new Date().toISOString();
+
+      // Reduce stock
+      item.qty -= qty;
+
+      let verifiedCustomer = null;
+      if (method === 'Credit') {
+        verifiedCustomer = findOrCreateCustomer(customerName);
+        
+        // Add to credit ledger
+        state.creditTx.push({
+          id: generateId('ctx'),
+          type: 'CREDIT',
+          customer: verifiedCustomer.name,
+          itemId: item.id,
+          itemName: item.name,
+          qty,
+          unitPrice,
+          amount: revenue,
+          timestamp,
+          note: 'Counter Credit Sale'
+        });
+      }
+
+      // Store sale
+      const newSale = {
+        id: generateId('sale'),
+        itemId: item.id,
+        itemName: item.name,
+        qty,
+        unitPrice,
+        unitCost,
+        revenue,
+        cost,
+        profit,
+        paymentMethod: method,
+        customer: verifiedCustomer ? verifiedCustomer.name : null,
+        timestamp
+      };
+
+      state.sales.push(newSale);
+      persist();
+
+      // Reset form
+      select.value = '';
+      qtyInput.value = '1';
+      methodSelect.value = 'Cash';
+      custInput.value = '';
+      document.getElementById('creditCustomerGroup').style.display = 'none';
+
+      // Jump to dashboard
+      switchTab('dashboard');
+    }
+
+    /* --------------------------------------------------------------------------
+       TAB 4: SALES HISTORY
+       -------------------------------------------------------------------------- */
+    function renderSalesHistory() {
+      const tbody = document.getElementById('fullSalesTbody');
+      if (state.sales.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="empty-ledger-state">No sales history recorded yet.</td></tr>`;
+        return;
+      }
+
+      const sortedSales = [...state.sales].reverse();
+      tbody.innerHTML = sortedSales.map(s => {
+        const prof = round2(Number(s.profit) || 0);
+        const profColorClass = prof < 0 ? 'color: var(--rust); font-weight:700;' : (prof > 0 ? 'color: var(--betel-green); font-weight:700;' : '');
+        const payBadge = getPaymentBadgeHTML(s.paymentMethod, s.customer);
+
+        return `
+          <tr>
+            <td><strong>${escapeHTML(s.itemName)}</strong></td>
+            <td class="num-cell align-right">${s.qty}</td>
+            <td class="num-cell align-right">${formatIndianRupees(s.unitPrice)}</td>
+            <td class="num-cell align-right"><strong>${formatIndianRupees(s.revenue)}</strong></td>
+            <td class="num-cell align-right">${formatIndianRupees(s.cost)}</td>
+            <td class="num-cell align-right" style="${profColorClass}">${formatIndianRupees(prof)}</td>
+            <td>${payBadge}</td>
+            <td style="font-size: 0.8rem; color: var(--text-muted);">${formatDateTime(s.timestamp)}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function handleClearSalesHistory() {
+      const confirmed = await askConfirm(
+        "Are you sure you want to CLEAR ALL sales history?\n\nThis will reset daily and all-time revenue and profit metrics to zero. Active stock and khata balances will NOT be altered.",
+        "Clear Sales History"
+      );
+
+      if (!confirmed) return;
+
+      state.sales = [];
+      persist();
+      renderSalesHistory();
+      renderDashboard();
+    }
+
+    /* --------------------------------------------------------------------------
+       TAB 5: CREDIT BOOK (KHATA)
+       -------------------------------------------------------------------------- */
+    function populateKhataItemSelect() {
+      const select = document.getElementById('khataItemSelect');
+      if (!select) return;
+
+      let options = `<option value="">-- Choose item --</option>`;
+      state.stock.forEach(item => {
+        options += `<option value="${item.id}">
+          ${escapeHTML(item.name)} (Stock: ${item.qty} | Price: ${formatIndianRupees(item.price)})
+        </option>`;
+      });
+      select.innerHTML = options;
+    }
+
+    function renderKhata() {
+      renderCustomerBalances();
+      renderCreditItemsTable();
+      updateCustomerDatalist();
+    }
+
+    function renderCustomerBalances() {
+      const tbody = document.getElementById('customerBalanceTbody');
+      const balances = getCustomerBalances();
+
+      if (balances.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="empty-ledger-state">No customer credit accounts yet. Use the form above to add an entry.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = balances.map(b => {
+        const bal = round2(b.balance);
+        let balanceDisplay = '';
+        
+        if (bal > 0) {
+          balanceDisplay = `<span class="owed-badge">${formatIndianRupees(bal)}</span>`;
+        } else if (bal < 0) {
+          balanceDisplay = `<span class="advance-badge">${formatIndianRupees(Math.abs(bal))} (advance)</span>`;
+        } else {
+          balanceDisplay = `<span style="color: var(--betel-green); font-weight:600; font-family: var(--font-num);">₹0 (Settled)</span>`;
+        }
+
+        return `
+          <tr>
+            <td><strong>${escapeHTML(b.name)}</strong></td>
+            <td class="num-cell align-right">${balanceDisplay}</td>
+            <td style="text-align: right; white-space: nowrap;">
+              <button type="button" class="btn btn-outline btn-sm" onclick="handleRecordKhataPayment('${escapeHTML(b.name)}')" style="margin-right: 4px;">
+                ₹ Record Payment
+              </button>
+              <button type="button" class="btn btn-danger btn-sm" onclick="handleRemoveCustomer('${escapeHTML(b.name)}')">
+                Remove
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderCreditItemsTable() {
+      const tbody = document.getElementById('creditTxTbody');
+      // Show all credit given entries (type === 'CREDIT'), chronological descending
+      const creditEntries = state.creditTx
+        .filter(t => t.type === 'CREDIT')
+        .reverse();
+
+      if (creditEntries.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="empty-ledger-state">No items given on credit yet. Always visible here with zero clicks.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = creditEntries.map(tx => {
+        return `
+          <tr>
+            <td style="font-size: 0.8rem; color: var(--text-muted);">${formatDateTime(tx.timestamp)}</td>
+            <td><strong>${escapeHTML(tx.customer)}</strong></td>
+            <td>${escapeHTML(tx.itemName)}</td>
+            <td class="num-cell align-right">${tx.qty}</td>
+            <td class="num-cell align-right">${formatIndianRupees(tx.unitPrice)}</td>
+            <td class="num-cell align-right"><strong>${formatIndianRupees(tx.amount)}</strong></td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function handleCreditEntry(e) {
+      e.preventDefault();
+      const custInput = document.getElementById('khataCustomerName');
+      const itemSelect = document.getElementById('khataItemSelect');
+      const qtyInput = document.getElementById('khataQty');
+
+      const customerName = (custInput.value || '').trim();
+      const itemId = itemSelect.value;
+      const qty = parseInt(qtyInput.value, 10);
+
+      if (!customerName) {
+        alertNotice("Please enter customer name.");
+        return;
+      }
+
+      const item = state.stock.find(i => i.id === itemId);
+      if (!item) {
+        alertNotice("Please select an item from stock.");
+        return;
+      }
+
+      if (isNaN(qty) || qty <= 0) {
+        alertNotice("Please enter a valid quantity.");
+        return;
+      }
+
+      // Check stock
+      if (qty > item.qty) {
+        alertNotice(`Cannot give ${qty} units. Only ${item.qty} units available in stock.`);
+        return;
+      }
+
+      const unitPrice = round2(Number(item.price) || 0);
+      const unitCost = round2(Number(item.cost) || 0);
+      const revenue = round2(unitPrice * qty);
+      const cost = round2(unitCost * qty);
+      const profit = round2(revenue - cost);
+      const timestamp = new Date().toISOString();
+
+      // Ensure customer exists
+      const customer = findOrCreateCustomer(customerName);
+
+      // 1. Reduce stock
+      item.qty -= qty;
+
+      // 2. Add to credit transactions
+      state.creditTx.push({
+        id: generateId('ctx'),
+        type: 'CREDIT',
+        customer: customer.name,
+        itemId: item.id,
+        itemName: item.name,
+        qty,
+        unitPrice,
+        amount: revenue,
+        timestamp,
+        note: 'Khata Tab Entry'
+      });
+
+      // 3. Must also appear in Sales History and profit totals
+      state.sales.push({
+        id: generateId('sale'),
+        itemId: item.id,
+        itemName: item.name,
+        qty,
+        unitPrice,
+        unitCost,
+        revenue,
+        cost,
+        profit,
+        paymentMethod: 'Credit',
+        customer: customer.name,
+        timestamp
+      });
+
+      persist();
+
+      // Reset form
+      custInput.value = '';
+      itemSelect.value = '';
+      qtyInput.value = '1';
+
+      renderKhata();
+      renderStock();
+      renderDashboard();
+      populateSaleItemSelect();
+      populateKhataItemSelect();
+
+      alertNotice(`Recorded ₹${revenue} on credit for ${customer.name}. Stock and ledger updated.`, "Khata Updated");
+    }
+
+    async function handleRecordKhataPayment(customerName) {
+      const balances = getCustomerBalances();
+      const current = balances.find(b => b.name.toLowerCase() === customerName.toLowerCase());
+      const currentBal = current ? current.balance : 0;
+
+      const promptMsg = currentBal > 0 
+        ? `Enter payment amount received from "${customerName}" (Current balance owed: ${formatIndianRupees(currentBal)}):`
+        : `Enter payment amount received from "${customerName}" (Current balance: ${formatIndianRupees(currentBal)}):`;
+
+      const inputVal = await askPrompt(promptMsg, currentBal > 0 ? String(currentBal) : "", "number", "Record Repayment");
+      if (inputVal === null) return;
+
+      const amt = round2(parseFloat(inputVal) || 0);
+      if (isNaN(amt) || amt <= 0) {
+        await alertNotice("Please enter a valid positive payment amount.");
+        return;
+      }
+
+      state.creditTx.push({
+        id: generateId('ctx'),
+        type: 'PAYMENT',
+        customer: customerName,
+        itemId: null,
+        itemName: 'Repayment Received',
+        qty: 1,
+        unitPrice: amt,
+        amount: amt,
+        timestamp: new Date().toISOString(),
+        note: 'Payment Recorded'
+      });
+
+      persist();
+      renderKhata();
+      renderDashboard();
+    }
+
+    async function handleRemoveCustomer(customerName) {
+      const confirmed = await askConfirm(
+        `Are you sure you want to remove customer "${customerName}" from Khata?\n\nThis will settle their account in the customer list. Historical transactions remain in the ledger archive.`,
+        "Remove Customer Account"
+      );
+
+      if (!confirmed) return;
+
+      state.customers = state.customers.filter(c => c.name.toLowerCase() !== customerName.toLowerCase());
+      persist();
+      renderKhata();
+      renderDashboard();
+    }
+
+    /* --------------------------------------------------------------------------
+       MASTER RENDER
+       -------------------------------------------------------------------------- */
+    function renderAll() {
+      renderDashboard();
+      renderStock();
+      renderSalesHistory();
+      renderKhata();
+      populateSaleItemSelect();
+      populateKhataItemSelect();
+      updateCustomerDatalist();
+    }
+
+    /* --------------------------------------------------------------------------
+       INITIALIZATION
+       -------------------------------------------------------------------------- */
+    window.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      checkSessionLock();
+    });
+  </script>
+</body>
+</html>

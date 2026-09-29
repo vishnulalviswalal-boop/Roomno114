@@ -1,0 +1,11 @@
+# Large binaries
+cloudflared.exe
+*.exe
+
+# Python
+__pycache__/
+*.pyc
+
+# OS files
+Thumbs.db
+.DS_Store

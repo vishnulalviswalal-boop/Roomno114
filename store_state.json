@@ -1,0 +1,80 @@
+{
+  "stock": [
+    {
+      "id": "stk_1",
+      "name": "Aashirvaad Shudh Chakki Atta 5kg",
+      "cost": 215,
+      "price": 250,
+      "qty": 14,
+      "alertThreshold": 5
+    },
+    {
+      "id": "stk_2",
+      "name": "Tata Salt Iodised 1kg",
+      "cost": 22,
+      "price": 28,
+      "qty": 35,
+      "alertThreshold": 10
+    },
+    {
+      "id": "stk_3",
+      "name": "Fortune Sunlite Refined Oil 1L",
+      "cost": 118,
+      "price": 135,
+      "qty": 12,
+      "alertThreshold": 4
+    },
+    {
+      "id": "stk_4",
+      "name": "Toor Dal Premium 1kg",
+      "cost": 145,
+      "price": 170,
+      "qty": 3,
+      "alertThreshold": 5
+    },
+    {
+      "id": "stk_5",
+      "name": "Amul Taaza Homogenised Milk 1L",
+      "cost": 58,
+      "price": 68,
+      "qty": 8,
+      "alertThreshold": 5
+    },
+    {
+      "id": "stk_6",
+      "name": "Parle-G Gold Biscuits 1kg",
+      "cost": 95,
+      "price": 120,
+      "qty": 2,
+      "alertThreshold": 4
+    },
+    {
+      "id": "stk_7",
+      "name": "Taj Mahal Tea 250g",
+      "cost": 160,
+      "price": 195,
+      "qty": 11,
+      "alertThreshold": 3
+    },
+    {
+      "id": "stk_8",
+      "name": "Maggi 2-Minute Masala Noodles 4-Pack",
+      "cost": 48,
+      "price": 56,
+      "qty": 18,
+      "alertThreshold": 6
+    },
+    {
+      "id": "stk_1790673093378_oyh35",
+      "name": "malbro",
+      "cost": 20,
+      "price": 25,
+      "qty": 30,
+      "alertThreshold": 5
+    }
+  ],
+  "sales": [],
+  "customers": [],
+  "creditTx": [],
+  "_updatedAt": 1790673093378
+}
