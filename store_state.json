@@ -5,16 +5,16 @@
       "name": "Aashirvaad Shudh Chakki Atta 5kg",
       "cost": 215,
       "price": 250,
-      "qty": 14,
+      "qty": 13,
       "alertThreshold": 5
     },
     {
-      "id": "stk_2",
-      "name": "Tata Salt Iodised 1kg",
-      "cost": 22,
-      "price": 28,
-      "qty": 35,
-      "alertThreshold": 10
+      "id": "stk_5",
+      "name": "Amul Taaza Homogenised Milk 1L",
+      "cost": 58,
+      "price": 68,
+      "qty": 8,
+      "alertThreshold": 5
     },
     {
       "id": "stk_3",
@@ -25,20 +25,12 @@
       "alertThreshold": 4
     },
     {
-      "id": "stk_4",
-      "name": "Toor Dal Premium 1kg",
-      "cost": 145,
-      "price": 170,
-      "qty": 3,
-      "alertThreshold": 5
-    },
-    {
-      "id": "stk_5",
-      "name": "Amul Taaza Homogenised Milk 1L",
-      "cost": 58,
-      "price": 68,
-      "qty": 8,
-      "alertThreshold": 5
+      "id": "stk_8",
+      "name": "Maggi 2-Minute Masala Noodles 4-Pack",
+      "cost": 48,
+      "price": 56,
+      "qty": 18,
+      "alertThreshold": 6
     },
     {
       "id": "stk_6",
@@ -57,12 +49,20 @@
       "alertThreshold": 3
     },
     {
-      "id": "stk_8",
-      "name": "Maggi 2-Minute Masala Noodles 4-Pack",
-      "cost": 48,
-      "price": 56,
-      "qty": 18,
-      "alertThreshold": 6
+      "id": "stk_2",
+      "name": "Tata Salt Iodised 1kg",
+      "cost": 22,
+      "price": 28,
+      "qty": 35,
+      "alertThreshold": 10
+    },
+    {
+      "id": "stk_4",
+      "name": "Toor Dal Premium 1kg",
+      "cost": 145,
+      "price": 170,
+      "qty": 3,
+      "alertThreshold": 5
     },
     {
       "id": "stk_1790673093378_oyh35",
@@ -73,8 +73,23 @@
       "alertThreshold": 5
     }
   ],
-  "sales": [],
+  "sales": [
+    {
+      "id": "sale_1790776646324_7uipy",
+      "itemId": "stk_1",
+      "itemName": "Aashirvaad Shudh Chakki Atta 5kg",
+      "qty": 1,
+      "unitPrice": 250,
+      "unitCost": 215,
+      "revenue": 250,
+      "cost": 215,
+      "profit": 35,
+      "paymentMethod": "Cash",
+      "customer": null,
+      "timestamp": "2026-09-30T13:57:26.324Z"
+    }
+  ],
   "customers": [],
   "creditTx": [],
-  "_updatedAt": 1790673093378
+  "_updatedAt": 1790776646324
 }
