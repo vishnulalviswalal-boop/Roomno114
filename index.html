@@ -1458,7 +1458,11 @@
 
           <div class="form-group" style="margin-bottom: 8px;">
             <label class="form-label" for="syncFirebaseUrlInput" style="font-size: 0.8rem; font-weight: 600;">Firebase Realtime Database URL</label>
-            <input type="text" id="syncFirebaseUrlInput" class="form-input" style="font-size: 0.82rem;" placeholder="https://room114-kirana-default-rtdb.firebaseio.com">
+            <input type="text" id="syncFirebaseUrlInput" class="form-input" style="font-size: 0.82rem;" placeholder="https://room-no-114-14006-default-rtdb.asia-southeast1.firebasedatabase.app">
+            <div style="display: flex; gap: 6px; margin-top: 6px;">
+              <button type="button" class="btn btn-outline btn-sm" style="font-size: 0.72rem; padding: 2px 8px;" onclick="setQuickFirebaseUrl('https://room-no-114-14006-default-rtdb.asia-southeast1.firebasedatabase.app')">📍 Singapore Region</button>
+              <button type="button" class="btn btn-outline btn-sm" style="font-size: 0.72rem; padding: 2px 8px;" onclick="setQuickFirebaseUrl('https://room-no-114-14006-default-rtdb.firebaseio.com')">📍 US Region</button>
+            </div>
           </div>
 
           <div class="form-group" style="margin-bottom: 10px;">
@@ -1650,11 +1654,26 @@
     /* --------------------------------------------------------------------------
        STORAGE & 5-PARTNER LIVE SYNC ENGINE (FIREBASE CLOUD + LOCAL SQLITE)
        -------------------------------------------------------------------------- */
+    const FIREBASE_CONFIG = {
+      apiKey: "AIzaSyCnGhbiSi7zzv_32c42mhe9vda2vSaEJ-0",
+      authDomain: "room-no-114-14006.firebaseapp.com",
+      projectId: "room-no-114-14006",
+      storageBucket: "room-no-114-14006.firebasestorage.app",
+      messagingSenderId: "1093093501140",
+      appId: "1:1093093501140:web:9014685e2b1ade169af341",
+      measurementId: "G-B1JF69YP1F"
+    };
+
     const SYNC_CONFIG_KEY = "room114_sync_cfg_v1";
     let syncConfig = {
       roomKey: "room114_kirana_live",
-      customFirebaseUrl: ""
+      customFirebaseUrl: "https://room-no-114-14006-default-rtdb.asia-southeast1.firebasedatabase.app"
     };
+
+    function setQuickFirebaseUrl(url) {
+      const input = document.getElementById('syncFirebaseUrlInput');
+      if (input) input.value = url;
+    }
 
     let isLocalSaving = false;
     let cloudDebounceTimer = null;
