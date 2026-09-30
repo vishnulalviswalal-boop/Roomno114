@@ -1422,54 +1422,82 @@
   <!-- ==========================================================================
        5 PARTNERS LIVE SYNC MODAL
        ========================================================================== -->
+  <!-- ==========================================================================
+       5 PARTNERS LIVE CLOUD & WI-FI SYNC MODAL
+       ========================================================================== -->
   <div id="syncModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="syncModalTitle">
-    <div class="modal-card" style="max-width: 480px;">
-      <h3 id="syncModalTitle" class="modal-title">👥 5 Partners Live Stock Sync</h3>
+    <div class="modal-card" style="max-width: 520px; max-height: 90vh; overflow-y: auto;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+        <h3 id="syncModalTitle" class="modal-title" style="margin: 0;">👥 5 Partners Live Cloud Sync</h3>
+        <button type="button" class="btn btn-outline btn-sm" onclick="closePartnerSyncModal()" style="padding: 2px 8px;">✕</button>
+      </div>
+      
       <div class="modal-body">
-        <p style="margin-bottom: 12px; font-size: 0.88rem; color: var(--text-muted);">
-          Keep live stock, sales &amp; khata ledgers synchronized in real-time across all 5 partners' mobile phones.
+        <p style="margin-bottom: 12px; font-size: 0.85rem; color: var(--text-muted); line-height: 1.4;">
+          Sync live stock, sales &amp; khata ledgers 24/7 across all 5 partners' mobile phones — anywhere in India, even when the shop PC is off.
         </p>
 
+        <!-- Current Status Banner -->
         <div style="background: var(--paper-warm); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between;">
           <div>
-            <div style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">Sync Status</div>
+            <div style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted);">Sync Engine</div>
             <div id="syncModalStatusText" style="font-weight: 700; font-family: var(--font-num); color: var(--betel-green);">🟢 Live Sync Active</div>
           </div>
           <button type="button" class="btn btn-outline btn-sm" onclick="triggerManualSync()">↻ Sync Now</button>
         </div>
 
-        <div class="form-group" style="margin-bottom: 12px;">
-          <label class="form-label" for="syncPublicUrlDisplay">🌐 Public Live Link (Works 100 km away on 4G / 5G)</label>
-          <div style="display: flex; gap: 6px;">
-            <input type="text" id="syncPublicUrlDisplay" class="form-input" readonly value="https://arg-edwards-lamp-otherwise.trycloudflare.com">
-            <button type="button" class="btn btn-success btn-sm" onclick="copyPublicUrl()">Copy</button>
+        <!-- CLOUD DATABASE (FIREBASE) SECTION -->
+        <div style="background: rgba(200, 145, 43, 0.08); border: 1px solid rgba(200, 145, 43, 0.35); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 14px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+            <span style="font-weight: 700; font-size: 0.9rem; color: var(--ink);">☁️ 24/7 Cloud Database (Google Firebase)</span>
+            <span id="firebaseStatusBadge" style="font-size: 0.72rem; background: var(--turmeric); color: white; padding: 2px 7px; border-radius: 10px; font-weight: 600;">Cloud Ready</span>
           </div>
-          <span class="input-hint">Send this link to the partner 100 km away. Works on any phone network!</span>
-        </div>
+          <p style="margin: 0 0 10px 0; font-size: 0.78rem; color: var(--text-muted); line-height: 1.4;">
+            Saves data to Google Firebase in the cloud. Every sale, restock, or payment syncs across all 5 phones in real-time.
+          </p>
 
-        <div class="form-group" style="margin-bottom: 12px;">
-          <label class="form-label" for="syncWifiUrlDisplay">📶 Store Wi-Fi Link (Inside shop)</label>
-          <div style="display: flex; gap: 6px;">
-            <input type="text" id="syncWifiUrlDisplay" class="form-input" readonly value="http://10.187.3.226:8080/index.html">
-            <button type="button" class="btn btn-primary btn-sm" onclick="copyWifiUrl()">Copy</button>
+          <div class="form-group" style="margin-bottom: 8px;">
+            <label class="form-label" for="syncFirebaseUrlInput" style="font-size: 0.8rem; font-weight: 600;">Firebase Realtime Database URL</label>
+            <input type="text" id="syncFirebaseUrlInput" class="form-input" style="font-size: 0.82rem;" placeholder="https://room114-kirana-default-rtdb.firebaseio.com">
           </div>
-          <span class="input-hint">Use this when inside the shop connected to the store Wi-Fi router.</span>
+
+          <div class="form-group" style="margin-bottom: 10px;">
+            <label class="form-label" for="syncRoomKeyInput" style="font-size: 0.8rem; font-weight: 600;">Store / Room Key</label>
+            <input type="text" id="syncRoomKeyInput" class="form-input" style="font-size: 0.82rem;" value="room114_kirana_live">
+          </div>
+
+          <div id="firebaseTestStatus" style="font-size: 0.8rem; margin-bottom: 10px; min-height: 18px; font-weight: 600;"></div>
+
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button type="button" class="btn btn-primary btn-sm" onclick="testAndSaveFirebase()" style="padding: 6px 14px; font-weight: 700;">
+              ⚡ Connect &amp; Sync Cloud
+            </button>
+            <button type="button" class="btn btn-success btn-sm" onclick="copyPartnerInviteLink()" style="padding: 6px 14px;">
+              📲 Copy Link for 4 Partners
+            </button>
+          </div>
+
+          <!-- 1-Minute Firebase Setup Guide -->
+          <details style="margin-top: 10px; font-size: 0.78rem; color: var(--text-muted);">
+            <summary style="cursor: pointer; font-weight: 700; color: var(--turmeric-dark);">📖 How to get your FREE Firebase URL (1-Minute Guide)</summary>
+            <ol style="margin: 6px 0 4px 18px; padding: 0; line-height: 1.5;">
+              <li>Open <strong><a href="https://console.firebase.google.com" target="_blank" rel="noopener" style="color: var(--betel-green); text-decoration: underline;">console.firebase.google.com</a></strong> and sign in with your Google account.</li>
+              <li>Click <strong>"Add project"</strong>, enter a project name (e.g. <code>room114</code>) and click Continue (disable Analytics, not needed).</li>
+              <li>In left sidebar, click <strong>Build &rarr; Realtime Database</strong> &rarr; click <strong>"Create Database"</strong> (select Singapore or US).</li>
+              <li>Choose <strong>"Start in test mode"</strong> (allows read &amp; write). Click Enable.</li>
+              <li>Copy the URL at the top (e.g. <code>https://room114-xxxx-default-rtdb.firebaseio.com</code>) and paste it into the field above!</li>
+            </ol>
+          </details>
         </div>
 
-        <div class="form-group" style="margin-bottom: 12px;">
-          <label class="form-label" for="syncRoomKeyInput">Store Sync Room Key</label>
-          <input type="text" id="syncRoomKeyInput" class="form-input" value="room114_kirana_live">
-          <span class="input-hint">Must match across all 5 phones to share the same stock and sales ledger.</span>
-        </div>
-
-        <!-- Active Database Status -->
+        <!-- LOCAL PC & SQLITE DATABASE -->
         <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 12px;">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-            <span style="font-weight: 700; font-size: 0.85rem; color: #065f46;">🗄️ Database: SQLite 3 (store.db)</span>
-            <span id="dbBadgeStatus" style="font-size: 0.75rem; background: #10b981; color: white; padding: 2px 7px; border-radius: 10px; font-weight: 600;">Active &amp; ACID Safe</span>
+            <span style="font-weight: 700; font-size: 0.85rem; color: #065f46;">🗄️ Local PC Database: SQLite 3 (store.db)</span>
+            <span id="dbBadgeStatus" style="font-size: 0.72rem; background: #10b981; color: white; padding: 2px 7px; border-radius: 10px; font-weight: 600;">ACID Protected</span>
           </div>
           <p id="dbStatsSummary" style="margin: 0 0 8px 0; font-size: 0.78rem; color: #047857; line-height: 1.4;">
-            Your database engine (<code>store.db</code>) is active with ACID transaction safety and WAL concurrency. All stock, sales, and khata records persist safely on disk.
+            Permanent SQLite database file (<code>store.db</code>) with full transaction safety on this computer.
           </p>
           <div style="display: flex; gap: 8px; flex-wrap: wrap;">
             <a href="/api/db/backup" download="store_backup.db" class="btn btn-outline btn-sm" style="text-decoration: none; padding: 4px 10px; font-size: 0.75rem; color: #065f46; border-color: rgba(16, 185, 129, 0.5);">
@@ -1481,23 +1509,28 @@
           </div>
         </div>
 
-        <details style="margin-bottom: 14px; font-size: 0.82rem; color: var(--text-muted);">
-          <summary style="cursor: pointer; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">⚙️ Advanced: Optional External Firebase DB</summary>
-          <div class="form-group" style="margin-top: 8px; margin-bottom: 6px;">
-            <label class="form-label" for="syncFirebaseUrlInput">Firebase Realtime Database URL (Optional)</label>
-            <input type="text" id="syncFirebaseUrlInput" class="form-input" placeholder="https://your-project-default-rtdb.firebaseio.com/shop/state.json">
-            <span class="input-hint">Only needed if you want a third-party cloud database without running this PC.</span>
+        <!-- NETWORK LINKS -->
+        <details style="margin-bottom: 10px; font-size: 0.82rem; color: var(--text-muted);">
+          <summary style="cursor: pointer; font-weight: 600; color: var(--text-main); margin-bottom: 6px;">🌐 PC Server &amp; Wi-Fi Links</summary>
+          <div class="form-group" style="margin-bottom: 8px;">
+            <label class="form-label" for="syncPublicUrlDisplay">🌐 Cloudflare Public Tunnel Link</label>
+            <div style="display: flex; gap: 6px;">
+              <input type="text" id="syncPublicUrlDisplay" class="form-input" readonly value="https://arg-edwards-lamp-otherwise.trycloudflare.com">
+              <button type="button" class="btn btn-success btn-sm" onclick="copyPublicUrl()">Copy</button>
+            </div>
+          </div>
+          <div class="form-group" style="margin-bottom: 8px;">
+            <label class="form-label" for="syncWifiUrlDisplay">📶 Store Wi-Fi Local Link</label>
+            <div style="display: flex; gap: 6px;">
+              <input type="text" id="syncWifiUrlDisplay" class="form-input" readonly value="http://10.187.3.226:8080/index.html">
+              <button type="button" class="btn btn-primary btn-sm" onclick="copyWifiUrl()">Copy</button>
+            </div>
           </div>
         </details>
-
-        <div style="font-size: 0.8rem; background: var(--bg-page); border-left: 3px solid var(--turmeric); padding: 8px 10px; border-radius: 2px; color: var(--text-main);">
-          ⚡ <strong>Live Multi-Device:</strong> When any partner records a sale or restocks on their phone, all other 4 phones reflect the updated inventory and profit figures in real-time.
-        </div>
       </div>
 
-      <div class="modal-actions" style="margin-top: 16px;">
+      <div class="modal-actions" style="margin-top: 14px;">
         <button type="button" class="btn btn-outline btn-sm" onclick="closePartnerSyncModal()">Close</button>
-        <button type="button" class="btn btn-primary btn-sm" onclick="savePartnerSyncConfig()">Save &amp; Connect</button>
       </div>
     </div>
   </div>
@@ -1615,7 +1648,7 @@
     }
 
     /* --------------------------------------------------------------------------
-       STORAGE & 5-PARTNER LIVE SYNC ENGINE
+       STORAGE & 5-PARTNER LIVE SYNC ENGINE (FIREBASE CLOUD + LOCAL SQLITE)
        -------------------------------------------------------------------------- */
     const SYNC_CONFIG_KEY = "room114_sync_cfg_v1";
     let syncConfig = {
@@ -1625,14 +1658,93 @@
 
     let isLocalSaving = false;
     let cloudDebounceTimer = null;
+    let fbEventSource = null;
+
+    function getFirebaseUrl() {
+      if (!syncConfig.customFirebaseUrl) return null;
+      let url = syncConfig.customFirebaseUrl.trim().replace(/\/+$/, '');
+      url = url.replace(/\/[^/]+\.json$/, '');
+      const room = (syncConfig.roomKey || 'room114_kirana_live').trim();
+      return `${url}/${room}.json`;
+    }
+
+    function setupFirebaseLiveStream() {
+      if (fbEventSource) {
+        try { fbEventSource.close(); } catch (e) {}
+        fbEventSource = null;
+      }
+
+      const fbUrl = getFirebaseUrl();
+      if (!fbUrl || typeof EventSource === 'undefined') return;
+
+      try {
+        fbEventSource = new EventSource(fbUrl);
+        fbEventSource.addEventListener('put', (event) => {
+          try {
+            const parsed = JSON.parse(event.data);
+            if (parsed && parsed.data) {
+              applyRemoteState(parsed.data);
+            }
+          } catch (e) {}
+        });
+        fbEventSource.onerror = () => {
+          // SSE fallback handled by periodic pull
+        };
+      } catch (e) {
+        console.warn("[Firebase] EventSource error:", e);
+      }
+    }
+
+    function applyRemoteState(remote) {
+      if (isLocalSaving || !remote || !remote._updatedAt) return false;
+      if (remote._updatedAt > (state._updatedAt || 0)) {
+        state.stock = Array.isArray(remote.stock) ? remote.stock : state.stock;
+        state.sales = Array.isArray(remote.sales) ? remote.sales : state.sales;
+        state.customers = Array.isArray(remote.customers) ? remote.customers : state.customers;
+        state.creditTx = Array.isArray(remote.creditTx) ? remote.creditTx : state.creditTx;
+        state._updatedAt = remote._updatedAt;
+
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (e) {}
+
+        renderCurrentTabViews();
+        updateStorageStatus("🟢 Synced across 5 devices");
+        updateHeaderSyncBadge(true, syncConfig.customFirebaseUrl ? "cloud" : "local");
+        return true;
+      }
+      return false;
+    }
 
     function loadSyncConfig() {
+      // 1. Check URL parameters and hash for shared config (1-tap setup for partners!)
+      try {
+        const urlObj = new URL(window.location.href);
+        let fbParam = urlObj.searchParams.get('fb') || urlObj.searchParams.get('firebase');
+        let roomParam = urlObj.searchParams.get('room');
+
+        if (!fbParam && window.location.hash) {
+          const hashParams = new URLSearchParams(window.location.hash.substring(1));
+          fbParam = hashParams.get('fb') || hashParams.get('firebase');
+          roomParam = roomParam || hashParams.get('room');
+        }
+
+        if (fbParam) {
+          syncConfig.customFirebaseUrl = fbParam.trim();
+          if (roomParam) syncConfig.roomKey = roomParam.trim();
+          localStorage.setItem(SYNC_CONFIG_KEY, JSON.stringify(syncConfig));
+        }
+      } catch (e) {}
+
+      // 2. Load stored config
       try {
         const stored = localStorage.getItem(SYNC_CONFIG_KEY);
         if (stored) {
           syncConfig = Object.assign(syncConfig, JSON.parse(stored));
         }
       } catch (e) {}
+
+      setupFirebaseLiveStream();
     }
 
     function loadState() {
@@ -1670,9 +1782,8 @@
 
     /**
      * Unified persist function:
-     * - Saves locally to localStorage (offline cache)
+     * - Saves locally to localStorage (offline first)
      * - Debounces remote push by ~250ms
-     * - Prevents race conditions with isLocalSaving
      */
     function persist() {
       state._updatedAt = Date.now();
@@ -1704,7 +1815,8 @@
         _updatedAt: state._updatedAt || Date.now()
       };
 
-      let syncedOk = false;
+      let localSynced = false;
+      let cloudSynced = false;
 
       // 1. Sync to local Wi-Fi server endpoint (/api/sync)
       try {
@@ -1713,67 +1825,44 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-        if (res.ok) {
-          syncedOk = true;
-        }
-      } catch (err) {
-        // server endpoint not reachable or offline
-      }
+        if (res.ok) localSynced = true;
+      } catch (err) {}
 
-      // 2. Sync to custom Firebase Realtime Database URL if configured
-      if (syncConfig.customFirebaseUrl) {
+      // 2. Sync to Firebase Cloud Realtime Database (24/7 accessible from anywhere)
+      const fbUrl = getFirebaseUrl();
+      if (fbUrl) {
         try {
-          let fbUrl = syncConfig.customFirebaseUrl.trim();
-          if (!fbUrl.endsWith('.json')) {
-            fbUrl = fbUrl.replace(/\/$/, '') + '/shop/state.json';
-          }
           const fbRes = await fetch(fbUrl, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
           });
-          if (fbRes.ok) {
-            syncedOk = true;
-          }
+          if (fbRes.ok) cloudSynced = true;
         } catch (err) {}
       }
 
       isLocalSaving = false;
-      if (syncedOk) {
-        updateStorageStatus("🟢 Synced across your devices");
-        updateHeaderSyncBadge(true);
+      if (cloudSynced) {
+        updateStorageStatus("🟢 24/7 Cloud Synced (Google Firebase)");
+        updateHeaderSyncBadge(true, "cloud");
+      } else if (localSynced) {
+        updateStorageStatus("🟢 Local Server Synced (Wi-Fi)");
+        updateHeaderSyncBadge(true, "local");
       } else {
-        updateStorageStatus("Saved on this device only");
+        updateStorageStatus("Saved on this device (offline cache)");
         updateHeaderSyncBadge(false);
       }
     }
 
     async function pullFromCloud() {
-      // RULE: Never let an incoming snapshot overwrite a local change that has not finished saving!
-      if (isLocalSaving) {
-        return;
-      }
+      if (isLocalSaving) return;
 
       let remote = null;
+      const fbUrl = getFirebaseUrl();
 
-      // Try local Wi-Fi server
-      try {
-        const res = await fetch('/api/sync', { cache: 'no-store' });
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data._updatedAt) {
-            remote = data;
-          }
-        }
-      } catch (err) {}
-
-      // Try custom Firebase URL if configured
-      if (!remote && syncConfig.customFirebaseUrl) {
+      // 1. Try Firebase Cloud first if configured (global 24/7)
+      if (fbUrl) {
         try {
-          let fbUrl = syncConfig.customFirebaseUrl.trim();
-          if (!fbUrl.endsWith('.json')) {
-            fbUrl = fbUrl.replace(/\/$/, '') + '/shop/state.json';
-          }
           const fbRes = await fetch(fbUrl, { cache: 'no-store' });
           if (fbRes.ok) {
             const fbData = await fbRes.json();
@@ -1784,25 +1873,21 @@
         } catch (err) {}
       }
 
-      if (!remote || !remote._updatedAt) {
-        return;
+      // 2. Try local Wi-Fi server if no cloud remote or offline
+      if (!remote) {
+        try {
+          const res = await fetch('/api/sync', { cache: 'no-store' });
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data._updatedAt) {
+              remote = data;
+            }
+          }
+        } catch (err) {}
       }
 
-      // Merge only if remote is newer
-      if (remote._updatedAt > (state._updatedAt || 0)) {
-        state.stock = Array.isArray(remote.stock) ? remote.stock : state.stock;
-        state.sales = Array.isArray(remote.sales) ? remote.sales : state.sales;
-        state.customers = Array.isArray(remote.customers) ? remote.customers : state.customers;
-        state.creditTx = Array.isArray(remote.creditTx) ? remote.creditTx : state.creditTx;
-        state._updatedAt = remote._updatedAt;
-
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        } catch (e) {}
-
-        renderCurrentTabViews();
-        updateStorageStatus("🟢 Synced across your devices");
-        updateHeaderSyncBadge(true);
+      if (remote) {
+        applyRemoteState(remote);
       }
     }
 
@@ -1828,18 +1913,36 @@
       if (modalStatus) modalStatus.textContent = text;
     }
 
-    function updateHeaderSyncBadge(online) {
+    function updateHeaderSyncBadge(online, type = 'cloud') {
       const el = document.getElementById('headerSyncText');
       if (el) {
-        el.textContent = online ? '🟢 5 Partners Synced' : '☁️ 5 Partners Sync';
+        if (online) {
+          el.textContent = type === 'cloud' ? '🟢 24/7 Cloud Synced' : '🟢 Wi-Fi Synced';
+        } else {
+          el.textContent = '☁️ 5 Partners Sync';
+        }
       }
     }
 
     // Modal controls for Partner Sync
     function openPartnerSyncModal() {
       loadSyncConfig();
-      document.getElementById('syncRoomKeyInput').value = syncConfig.roomKey || 'room114_kirana_live';
-      document.getElementById('syncFirebaseUrlInput').value = syncConfig.customFirebaseUrl || '';
+      const roomInput = document.getElementById('syncRoomKeyInput');
+      const fbInput = document.getElementById('syncFirebaseUrlInput');
+      if (roomInput) roomInput.value = syncConfig.roomKey || 'room114_kirana_live';
+      if (fbInput) fbInput.value = syncConfig.customFirebaseUrl || '';
+
+      const badgeEl = document.getElementById('firebaseStatusBadge');
+      if (badgeEl) {
+        if (syncConfig.customFirebaseUrl) {
+          badgeEl.textContent = '🟢 24/7 Cloud Active';
+          badgeEl.style.background = '#10b981';
+        } else {
+          badgeEl.textContent = 'Setup Needed';
+          badgeEl.style.background = 'var(--turmeric)';
+        }
+      }
+
       document.getElementById('syncModal').classList.add('active');
       refreshDbStats();
     }
@@ -1865,15 +1968,72 @@
       document.getElementById('syncModal').classList.remove('active');
     }
 
-    function savePartnerSyncConfig() {
-      syncConfig.roomKey = (document.getElementById('syncRoomKeyInput').value || 'room114_kirana_live').trim();
-      syncConfig.customFirebaseUrl = (document.getElementById('syncFirebaseUrlInput').value || '').trim();
+    async function testAndSaveFirebase() {
+      const urlInput = document.getElementById('syncFirebaseUrlInput');
+      const roomInput = document.getElementById('syncRoomKeyInput');
+      const statusEl = document.getElementById('firebaseTestStatus');
+      const badgeEl = document.getElementById('firebaseStatusBadge');
+
+      const url = (urlInput ? urlInput.value : '').trim();
+      const room = (roomInput ? roomInput.value : 'room114_kirana_live').trim();
+
+      if (!url) {
+        alertNotice("Please enter your Firebase Realtime Database URL (e.g. https://room114-xxx-default-rtdb.firebaseio.com)", "URL Required");
+        return;
+      }
+
+      if (statusEl) statusEl.innerHTML = '<span style="color: var(--turmeric-dark);">⏳ Connecting to Google Firebase...</span>';
+
+      syncConfig.customFirebaseUrl = url;
+      syncConfig.roomKey = room;
       try {
         localStorage.setItem(SYNC_CONFIG_KEY, JSON.stringify(syncConfig));
       } catch (e) {}
-      closePartnerSyncModal();
-      persist();
-      triggerManualSync();
+
+      const fbUrl = getFirebaseUrl();
+      try {
+        const res = await fetch(fbUrl, { cache: 'no-store' });
+        if (res.ok) {
+          const remoteData = await res.json();
+          if (!remoteData || !remoteData.stock || remoteData.stock.length === 0) {
+            if (statusEl) statusEl.innerHTML = '<span style="color: var(--turmeric-dark);">⬆️ Cloud is empty. Uploading current inventory to Firebase...</span>';
+            await pushToCloud();
+          } else {
+            applyRemoteState(remoteData);
+          }
+          setupFirebaseLiveStream();
+          if (badgeEl) {
+            badgeEl.textContent = '🟢 24/7 Cloud Active';
+            badgeEl.style.background = '#10b981';
+          }
+          if (statusEl) statusEl.innerHTML = '<span style="color: var(--betel-green);">🟢 Successfully connected! All 5 phones will now sync live 24/7 via Google Firebase!</span>';
+          updateHeaderSyncBadge(true, "cloud");
+        } else {
+          if (statusEl) statusEl.innerHTML = `<span style="color: var(--rust);">⚠️ Firebase HTTP ${res.status}: Ensure your Firebase Realtime Database rules are set to test mode (<code>".read": true, ".write": true</code>).</span>`;
+        }
+      } catch (err) {
+        if (statusEl) statusEl.innerHTML = '<span style="color: var(--rust);">❌ Connection failed: Please verify the URL and your internet connection.</span>';
+      }
+    }
+
+    function copyPartnerInviteLink() {
+      if (!syncConfig.customFirebaseUrl) {
+        alertNotice("Please connect your Firebase URL first by clicking 'Connect & Sync Cloud'.", "Setup Required");
+        return;
+      }
+
+      const baseUrl = window.location.origin + window.location.pathname;
+      const inviteUrl = `${baseUrl}#fb=${encodeURIComponent(syncConfig.customFirebaseUrl)}&room=${encodeURIComponent(syncConfig.roomKey || 'room114_kirana_live')}`;
+
+      navigator.clipboard.writeText(inviteUrl).then(() => {
+        alertNotice("📲 WhatsApp invite link copied! Send this link to the other 4 partners. When they tap it, their phone will automatically connect to this cloud database with ZERO manual setup!", "Invite Link Copied");
+      }).catch(() => {
+        showModal({
+          title: "Copy Invite Link",
+          body: `<p>Copy this link and send it via WhatsApp to your partners:</p><input type="text" class="form-input" readonly value="${inviteUrl}" style="width: 100%; margin-top: 8px;">`,
+          showCancel: false
+        });
+      });
     }
 
     function copyPublicUrl() {
@@ -1905,8 +2065,8 @@
       alertNotice("Sync check complete! All devices are synchronized.", "Synced");
     }
 
-    // Periodic pull every 2.5 seconds & on tab visibility
-    setInterval(pullFromCloud, 2500);
+    // Periodic pull every 3 seconds & on tab visibility
+    setInterval(pullFromCloud, 3000);
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') {
         pullFromCloud();
