@@ -6,6 +6,12 @@ cloudflared.exe
 __pycache__/
 *.pyc
 
+# SQLite Database
+*.db
+*.db-wal
+*.db-shm
+store.db
+
 # OS files
 Thumbs.db
 .DS_Store

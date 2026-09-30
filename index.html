@@ -1465,12 +1465,20 @@
         <!-- Active Database Status -->
         <div style="background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.25); border-radius: var(--radius-sm); padding: 10px 12px; margin-bottom: 12px;">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-            <span style="font-weight: 700; font-size: 0.85rem; color: #065f46;">🗄️ Database: Created &amp; Active</span>
-            <span style="font-size: 0.75rem; background: #10b981; color: white; padding: 2px 7px; border-radius: 10px; font-weight: 600;">Auto-Saving</span>
+            <span style="font-weight: 700; font-size: 0.85rem; color: #065f46;">🗄️ Database: SQLite 3 (store.db)</span>
+            <span id="dbBadgeStatus" style="font-size: 0.75rem; background: #10b981; color: white; padding: 2px 7px; border-radius: 10px; font-weight: 600;">Active &amp; ACID Safe</span>
           </div>
-          <p style="margin: 0; font-size: 0.78rem; color: #047857; line-height: 1.4;">
-            Your database file (<code>store_state.json</code>) is running automatically. Every sale, restock, and khata entry is saved permanently on disk and synced across all devices. No manual database setup needed!
+          <p id="dbStatsSummary" style="margin: 0 0 8px 0; font-size: 0.78rem; color: #047857; line-height: 1.4;">
+            Your database engine (<code>store.db</code>) is active with ACID transaction safety and WAL concurrency. All stock, sales, and khata records persist safely on disk.
           </p>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <a href="/api/db/backup" download="store_backup.db" class="btn btn-outline btn-sm" style="text-decoration: none; padding: 4px 10px; font-size: 0.75rem; color: #065f46; border-color: rgba(16, 185, 129, 0.5);">
+              💾 Download store.db Backup
+            </a>
+            <button type="button" class="btn btn-outline btn-sm" onclick="refreshDbStats()" style="padding: 4px 10px; font-size: 0.75rem; color: #065f46; border-color: rgba(16, 185, 129, 0.5);">
+              📊 Refresh DB Stats
+            </button>
+          </div>
         </div>
 
         <details style="margin-bottom: 14px; font-size: 0.82rem; color: var(--text-muted);">
@@ -1833,6 +1841,24 @@
       document.getElementById('syncRoomKeyInput').value = syncConfig.roomKey || 'room114_kirana_live';
       document.getElementById('syncFirebaseUrlInput').value = syncConfig.customFirebaseUrl || '';
       document.getElementById('syncModal').classList.add('active');
+      refreshDbStats();
+    }
+
+    async function refreshDbStats() {
+      try {
+        const res = await fetch('/api/db/stats');
+        if (res.ok) {
+          const stats = await res.json();
+          const summaryEl = document.getElementById('dbStatsSummary');
+          const badgeEl = document.getElementById('dbBadgeStatus');
+          if (badgeEl) badgeEl.textContent = '🟢 SQLite 3 Active';
+          if (summaryEl) {
+            summaryEl.innerHTML = `<strong>SQLite 3</strong> (<code>${stats.file}</code> — ${stats.size_kb} KB): <strong>${stats.stock_items_count}</strong> products in stock (${stats.total_inventory_units} units), <strong>${stats.sales_count}</strong> sales, <strong>${stats.customer_count}</strong> customers. Saved safely in ACID transactions.`;
+          }
+        }
+      } catch (e) {
+        // server not reachable
+      }
     }
 
     function closePartnerSyncModal() {

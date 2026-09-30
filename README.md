@@ -22,9 +22,17 @@ A real-time Kirana Point of Sale (POS) and inventory management web application 
    http://localhost:8080/index.html
    ```
 
-## 📁 Repository Structure
+## 📁 Repository Structure & Database
 
 - `index.html`: Complete Kirana store web application frontend and local logic.
-- `server.py`: Python HTTP server with live synchronization endpoint (`/api/sync`).
-- `store_state.json`: Local JSON database holding inventory, sales, customers, and khata records.
+- `server.py`: Python server with live synchronization and SQLite API endpoints.
+- `database.py`: SQLite 3 database manager with WAL mode, auto-migration, and ACID safety.
+- `store.db`: SQLite database file storing all tables (`stock`, `sales`, `customers`, `credit_tx`, `meta`).
+- `store_state.json`: Human-readable JSON backup and initial seed data.
 - `start_server.bat`: 1-click launcher for the local server and live tunnel.
+
+## 🗄️ Database Endpoints
+- `GET /api/sync`: Fetch full store state from SQLite.
+- `POST /api/sync`: Commit updates to SQLite with ACID transaction safety.
+- `GET /api/db/stats`: Live database statistics (total inventory, valuation, sales, profit, DB size).
+- `GET /api/db/backup`: Download raw `store.db` backup file.
